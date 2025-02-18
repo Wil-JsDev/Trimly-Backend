@@ -3,9 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DE19C4C7-1F9B-4382-9B9C-B0DBE1B1FDF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B7C415A7-3A94-48F3-BB97-8F8CA8670219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trimly.Core.Domain", "Trimly.Core.Domain\Trimly.Core.Domain.csproj", "{F87973BB-D35E-461F-A864-8AD80D8C989A}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F87973BB-D35E-461F-A864-8AD80D8C989A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87973BB-D35E-461F-A864-8AD80D8C989A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87973BB-D35E-461F-A864-8AD80D8C989A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87973BB-D35E-461F-A864-8AD80D8C989A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B7C415A7-3A94-48F3-BB97-8F8CA8670219} = {DE19C4C7-1F9B-4382-9B9C-B0DBE1B1FDF0}
+		{F87973BB-D35E-461F-A864-8AD80D8C989A} = {B7C415A7-3A94-48F3-BB97-8F8CA8670219}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46B90312-A1C3-4FC6-8883-5FAEFFEA2C85}
