@@ -16,4 +16,8 @@
     <PackageReference Include="MimeKit" Version="4.7.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Trimly.Core.Domain\Trimly.Core.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
