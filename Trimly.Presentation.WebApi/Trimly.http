@@ -1,0 +1,6 @@
+@Trimly.Presentation.WebApi_HostAddress = http://localhost:5113
+
+GET {{Trimly.Presentation.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
