@@ -21,5 +21,7 @@ namespace Trimly.Core.Domain.Models
         public Status? Status { get; set; }
 
         public Guid? RegisteredCompanyId { get; set; }
+        public RegisteredCompanies? RegisteredCompanies { get; set; }
+        public ICollection<Appointments>? Appointments { get; set; }
     }
 }

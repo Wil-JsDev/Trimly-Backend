@@ -23,5 +23,8 @@ namespace Trimly.Core.Domain.Models
         public Status? Status { get; set; }
 
         public DateTime? RegistrationDate { get; set; } = DateTime.UtcNow;
+        public ICollection<Services>? Services { get; set; }
+        public ICollection<Reviews>? Reviews { get; set; }
+        public ICollection<Schedules>? Schedules { get; set; }
     }
 }

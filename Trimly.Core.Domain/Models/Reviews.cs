@@ -13,5 +13,6 @@ namespace Trimly.Core.Domain.Models
         public int Rating { get; set; }
 
         public Guid? RegisteredCompanyId { get; set; }
+        public RegisteredCompanies? RegisteredCompanies { get; set; }
     }
 }
