@@ -79,21 +79,21 @@ namespace Trimly.Infrastructure.Persistence.Context
                 .WithMany(b => b.Services)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkRegisteredCompany");
+                .HasConstraintName("FkSSRegisteredCompany");
 
             modelBuilder.Entity<Reviews>()
                 .HasOne(b => b.RegisteredCompanies)
                 .WithMany(b => b.Reviews)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkRegisteredCompany");
+                .HasConstraintName("FkRRegisteredCompany");
 
             modelBuilder.Entity<Schedules>()
                 .HasOne(b => b.RegisteredCompanies)
                 .WithMany(b => b.Schedules)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkRegisteredCompany");
+                .HasConstraintName("FkSRegisteredCompany");
 
             modelBuilder.Entity<Appointments>()
                 .HasOne(b => b.Services)
