@@ -79,35 +79,35 @@ namespace Trimly.Infrastructure.Persistence.Context
                 .WithMany(b => b.Services)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkServicesRegisteredCompany");
+                .HasConstraintName("FkRegisteredCompany");
 
             modelBuilder.Entity<Reviews>()
                 .HasOne(b => b.RegisteredCompanies)
                 .WithMany(b => b.Reviews)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkReviewsRegisteredCompany");
+                .HasConstraintName("FkRegisteredCompany");
 
             modelBuilder.Entity<Schedules>()
                 .HasOne(b => b.RegisteredCompanies)
                 .WithMany(b => b.Schedules)
                 .HasForeignKey(b => b.RegisteredCompanyId)
                 .IsRequired()
-                .HasConstraintName("FkSchedulesRegisteredCompany");
+                .HasConstraintName("FkRegisteredCompany");
 
             modelBuilder.Entity<Appointments>()
                 .HasOne(b => b.Services)
                 .WithMany(b => b.Appointments)
                 .HasForeignKey(b => b.ServiceId)
                 .IsRequired()
-                .HasConstraintName("FkAppointmentService");
+                .HasConstraintName("FkService");
 
             modelBuilder.Entity<Appointments>()
                 .HasOne(b => b.Reservations)
                 .WithMany(b => b.Appointments)
                 .HasForeignKey(b => b.ReservationId)
                 .IsRequired()
-                .HasConstraintName("FkAppointmentReservation");
+                .HasConstraintName("FkReservation");
 
             #endregion
 
@@ -141,6 +141,9 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.ServicesId)
                     .ValueGeneratedOnAdd();
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasConversion<string>();
             });
 
             #endregion
@@ -177,6 +180,12 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.SchedulesId)
                     .ValueGeneratedOnAdd();
+                entity.Property(e => e.IsHoliday)
+                    .IsRequired()
+                    .HasConversion<string>();
+                entity.Property(e => e.Week)
+                    .IsRequired()
+                    .HasConversion<string>();
             });
 
             #endregion
@@ -210,6 +219,9 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.AppointmentId)
                     .ValueGeneratedOnAdd();
+                entity.Property(e => e.AppointmentStatus)
+                    .IsRequired()
+                    .HasConversion<string>();
             });
 
             #endregion
