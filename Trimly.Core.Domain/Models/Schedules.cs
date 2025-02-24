@@ -18,5 +18,6 @@ namespace Trimly.Core.Domain.Models
         public Status? IsHoliday { get; set; }
 
         public Guid? RegisteredCompanyId { get; set; }
+        public RegisteredCompanies? RegisteredCompanies { get; set;}
     }
 }

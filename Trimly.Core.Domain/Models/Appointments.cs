@@ -18,6 +18,8 @@ namespace Trimly.Core.Domain.Models
         public string? CancellationReason { get; set; }
 
         public Guid? ServiceId { get; set; }
-
+        public Guid? ReservationId { get; set; }
+        public Services? Services { get; set; }
+        public Reservations? Reservations { get; set; }
     }
 }

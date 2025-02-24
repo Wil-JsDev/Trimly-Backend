@@ -15,6 +15,7 @@ namespace Trimly.Core.Domain.Models
         public string? ConfirmationCode { get; set; }
 
         public Guid? AppointmentId { get; set; }
+        public ICollection<Appointments>? Appointments  { get; set; }
     }
 
 }
