@@ -9,7 +9,8 @@ namespace Trimly.Core.Domain.Enum
         Thursday,
         Friday,
         Saturday,
-        Sunday
+        Sunday,
+        WeekDays
     }
 
 }
