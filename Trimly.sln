@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trimly.Presentation", "Trimly\Trimly.Presentation.csproj", "{094D49F5-AA1D-45E1-AB5A-3B122FD86471}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trimly.Core.Application", "Trimly.Core.Application\Trimly.Core.Application.csproj", "{5BFDADCC-6708-45C6-A3C2-B697D239F9C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{094D49F5-AA1D-45E1-AB5A-3B122FD86471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{094D49F5-AA1D-45E1-AB5A-3B122FD86471}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{094D49F5-AA1D-45E1-AB5A-3B122FD86471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BFDADCC-6708-45C6-A3C2-B697D239F9C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFDADCC-6708-45C6-A3C2-B697D239F9C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFDADCC-6708-45C6-A3C2-B697D239F9C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BFDADCC-6708-45C6-A3C2-B697D239F9C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{304FA035-2F59-46AD-9B2D-2218630B1D99} = {26BB4DD1-ED20-403F-A768-FCE2B44C1BE3}
 		{A61D08B0-889A-4A58-AFD3-99DCF652F4A2} = {DE19C4C7-1F9B-4382-9B9C-B0DBE1B1FDF0}
 		{094D49F5-AA1D-45E1-AB5A-3B122FD86471} = {A61D08B0-889A-4A58-AFD3-99DCF652F4A2}
+		{5BFDADCC-6708-45C6-A3C2-B697D239F9C7} = {B7C415A7-3A94-48F3-BB97-8F8CA8670219}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46B90312-A1C3-4FC6-8883-5FAEFFEA2C85}
