@@ -13,7 +13,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
 
         Task UpdateAsync(TEntity entity);
 
-        Task<PagedResult<TEntity>> GetPagedResult(int pageNumber,int pageSize, CancellationToken cancellationToken);
+        Task<PagedResult<TEntity>> GetPagedResultAsync(int pageNumber,int pageSize, CancellationToken cancellationToken);
 
         Task SaveChangesAsync(CancellationToken cancellationToken);
     }
