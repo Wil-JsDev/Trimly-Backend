@@ -15,8 +15,6 @@ namespace Trimly.Core.Application.Interfaces.Repository
 
         Task<IEnumerable<RegisteredCompanies>> OrderByIdAscAsync(CancellationToken cancellationToken);
 
-        Task<IEnumerable<RegisteredCompanies>> FilterByRncAsync(string rnc, CancellationToken cancellationToken);
-
         Task<IEnumerable<RegisteredCompanies>> GetRecentAsync(CancellationToken cancellationToken);
     }
 }
