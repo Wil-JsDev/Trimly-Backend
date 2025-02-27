@@ -18,7 +18,6 @@ namespace Trimly.Infrastructure.Persistence.Context
         public DbSet<Services> Services { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
         public DbSet<Schedules> Schedules { get; set; }
-        public DbSet<Reservations> Reservations { get; set; }
         public DbSet<Appointments> Appointments { get; set; }
 
         #endregion
@@ -37,8 +36,6 @@ namespace Trimly.Infrastructure.Persistence.Context
                 .ToTable("Review");
             modelBuilder.Entity<Schedules>()
                 .ToTable("Schedule");
-            modelBuilder.Entity<Reservations>()
-                .ToTable("Reservation");
             modelBuilder.Entity<Appointments>()
                 .ToTable("Appointment");
 
@@ -61,10 +58,6 @@ namespace Trimly.Infrastructure.Persistence.Context
             modelBuilder.Entity<Schedules>()
                 .HasKey(b => b.SchedulesId)
                 .HasName("PkSchedule");
-
-            modelBuilder.Entity<Reservations>()
-                .HasKey(b => b.ReservationsId)
-                .HasName("PkReservation");
 
             modelBuilder.Entity<Appointments>()
                 .HasKey(b => b.AppointmentId)
@@ -101,14 +94,6 @@ namespace Trimly.Infrastructure.Persistence.Context
                 .HasForeignKey(b => b.ServiceId)
                 .IsRequired()
                 .HasConstraintName("FkService");
-
-            modelBuilder.Entity<Appointments>()
-                .HasOne(b => b.Reservations)
-                .WithMany(b => b.Appointments)
-                .HasForeignKey(b => b.ReservationId)
-                .IsRequired()
-                .HasConstraintName("FkReservation");
-
             #endregion
 
             #region RegisteredCompanies Property
@@ -186,22 +171,6 @@ namespace Trimly.Infrastructure.Persistence.Context
                 entity.Property(e => e.Week)
                     .IsRequired()
                     .HasConversion<string>();
-            });
-
-            #endregion
-
-            #region Reservations Property
-
-            modelBuilder.Entity<Reservations>(entity =>
-            {
-                entity.Property(e => e.StartDateTime)
-                    .IsRequired();
-                entity.Property(e => e.EndDateTime)
-                    .IsRequired();
-                entity.Property(e => e.Note)
-                    .HasMaxLength(150);
-                entity.Property(e => e.ReservationsId)
-                    .ValueGeneratedOnAdd();
             });
 
             #endregion
