@@ -8,6 +8,7 @@ namespace Trimly.Core.Application.DTOs.RegisteredCompanies
         string? Email,
         string? DescriptionCompanies,
         string? LogoUrl,
+        string? AddressCompany,
         Domain.Enum.Status? Status
     );
 }
