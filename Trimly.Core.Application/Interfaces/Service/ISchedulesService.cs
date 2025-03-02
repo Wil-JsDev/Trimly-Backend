@@ -1,5 +1,6 @@
 ﻿using Trimly.Core.Application.DTOs.Schedules;
 using Trimly.Core.Domain.Enum;
+using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application.Interfaces.Service
 {
@@ -8,14 +9,15 @@ namespace Trimly.Core.Application.Interfaces.Service
         UpdateSchedulesDTos,
         SchedulesDTos>
     {
-        Task<bool> ActivatedIsHolidayAsync(CancellationToken cancellationToken);
+        Task<ResultT<bool>> ActivatedIsHolidayAsync(CancellationToken cancellationToken);
 
-        Task<IEnumerable<SchedulesDTos>> FilterByOpeningTimeAsync(Guid registeredCompany, TimeOnly openingTime,CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<SchedulesDTos>>> FilterByOpeningTimeAsync(Guid registeredCompany, TimeOnly openingTime, CancellationToken cancellationToken);
 
-        Task<IEnumerable<SchedulesDTos>> FilterByIsHolidayAsync(Guid registeredCompany, CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<SchedulesDTos>>> FilterByIsHolidayAsync(Guid registeredCompany, CancellationToken cancellationToken);
 
-        Task<IEnumerable<SchedulesDTos>> FilterByWeekDayAsync(Guid registeredCompany, Weekday weekday,CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<SchedulesDTos>>> FilterByWeekDayAsync(Guid registeredCompany, Weekday weekday, CancellationToken cancellationToken);
 
-        Task<IEnumerable<SchedulesDTos>> GetSchedulesByCompanyIdAsync(Guid registeredCompanyId, CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<SchedulesDTos>>> GetSchedulesByCompanyIdAsync(Guid registeredCompanyId, CancellationToken cancellationToken);
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Trimly.Core.Application.Pagination;
+using Trimly.Core.Domain.Utils;
 namespace Trimly.Core.Application.Interfaces.Service
 {
     /// <summary>
@@ -10,14 +11,14 @@ namespace Trimly.Core.Application.Interfaces.Service
     /// <typeparam name="TResponseDTO">DTO for entity response.</typeparam>
     public interface IGenericService <TCreateDTo,TUpdateDTo,TResponseDTo>
     {
-        Task<PagedResult<TResponseDTo>> GetPagedResult(int pageNumber,int pageSize,CancellationToken cancellationToken);
+        Task<ResultT<PagedResult<TResponseDTo>>> GetPagedResult(int pageNumber,int pageSize,CancellationToken cancellationToken);
 
-        Task<TResponseDTo> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<ResultT<TResponseDTo>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task<TResponseDTo> CreateAsync(TCreateDTo entity, CancellationToken cancellationToken);
+        Task<ResultT<TResponseDTo>> CreateAsync(TCreateDTo entity, CancellationToken cancellationToken);
 
-        Task<TResponseDTo> UpdateAsync(Guid id, TUpdateDTo entity,CancellationToken cancellation);
+        Task<ResultT<TResponseDTo>> UpdateAsync(Guid id, TUpdateDTo entity,CancellationToken cancellation);
 
-        Task<Guid> DeleteAsync(Guid id, CancellationToken cancellation);
+        Task<ResultT<Guid>> DeleteAsync(Guid id, CancellationToken cancellation);
     }
 }

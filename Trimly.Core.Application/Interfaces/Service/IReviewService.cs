@@ -1,4 +1,5 @@
 ﻿using Trimly.Core.Application.DTOs.Review;
+using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application.Interfaces.Service
 {
@@ -7,6 +8,6 @@ namespace Trimly.Core.Application.Interfaces.Service
         ReviewsUpdateDTos,
         ReviewsDTos>
     {
-        Task<double> GetAverageRatingAsync(Guid companyId,CancellationToken cancellationToken);
+        Task<ResultT<double>> GetAverageRatingAsync(Guid companyId,CancellationToken cancellationToken);
     }
 }
