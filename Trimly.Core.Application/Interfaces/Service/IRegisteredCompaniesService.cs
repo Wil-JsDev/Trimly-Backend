@@ -1,5 +1,6 @@
 ﻿using Trimly.Core.Application.DTOs.RegisteredCompanies;
 using Trimly.Core.Domain.Enum;
+using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application.Interfaces.Service
 {
@@ -8,14 +9,14 @@ namespace Trimly.Core.Application.Interfaces.Service
         RegisteredCompaniesUpdateDTos,
         RegisteredCompaniesDTos>
     {
-        Task<IEnumerable<RegisteredCompaniesDTos>> FilterByNameAsync(string name, CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<OrderNameComapanyDTos>>> FilterByNameAsync(string name, CancellationToken cancellationToken);
 
-        Task<IEnumerable<RegisteredCompaniesDTos>> FilterByStatus(Status status, CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> FilterByStatusAsync(Status status, CancellationToken cancellationToken);
 
-        Task<IEnumerable<RegisteredCompaniesDTos>> OrderByNameAsync(CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> OrderByNameAsync(CancellationToken cancellationToken);
 
-        Task<IEnumerable<RegisteredCompaniesDTos>> OrderByIdAsync(string order,CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> OrderByIdAsync(string order, CancellationToken cancellationToken);
 
-        Task<IEnumerable<RegisteredCompaniesDTos>> GetRecentAsync(CancellationToken cancellationToken);
+        Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> GetRecentAsync(CancellationToken cancellationToken);
     }
 }
