@@ -1,4 +1,5 @@
-﻿using Trimly.Core.Application.Pagination;
+﻿using System.Threading;
+using Trimly.Core.Application.Pagination;
 
 namespace Trimly.Core.Application.Interfaces.Repository
 {
@@ -11,7 +12,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
 
         Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task UpdateAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
 
         Task<PagedResult<TEntity>> GetPagedResultAsync(int pageNumber,int pageSize, CancellationToken cancellationToken);
 
