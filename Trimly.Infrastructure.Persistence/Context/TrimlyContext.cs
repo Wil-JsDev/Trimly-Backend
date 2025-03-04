@@ -126,6 +126,8 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.ServicesId)
                     .ValueGeneratedOnAdd();
+                entity.Property(e => e.PenaltyAmount)
+                      .HasColumnType("decimal(10,2)");
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasConversion<string>();
