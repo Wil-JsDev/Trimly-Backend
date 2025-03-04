@@ -12,6 +12,8 @@ namespace Trimly.Core.Domain.Models
 
         public decimal Price { get; set; }
 
+        public decimal PenaltyAmount { get; set; }
+
         public string? Description { get; set; }
 
         public int DurationInMinutes { get; set; }

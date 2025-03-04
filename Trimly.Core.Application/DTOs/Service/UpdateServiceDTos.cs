@@ -6,6 +6,7 @@ namespace Trimly.Core.Application.DTOs.Service
         string? Name,
         decimal Price,
         string? Description,
-        int DurationInMinutes
+        int DurationInMinutes,
+        decimal PenaltyAmount
     );
 }

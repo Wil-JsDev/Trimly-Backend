@@ -8,6 +8,7 @@ namespace Trimly.Core.Application.DTOs.Service
         string? Description,
         int DurationInMinutes,
         string? ImageUrl,
-        Guid? RegisteredCompanyId
+        Guid? RegisteredCompanyId,
+        decimal PenaltyAmount
     );
 }

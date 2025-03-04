@@ -12,6 +12,7 @@ namespace Trimly.Core.Application.DTOs.Service
         Domain.Enum.Status? Status,
         Guid? RegisteredCompanyId,
         DateTime? CreatedAt,
-        DateTime? UpdateAt
+        DateTime? UpdateAt,
+        decimal PenaltyAmount
     );
 }
