@@ -1,4 +1,5 @@
 using Trimly.Infrastructure.Persistence;
+using Trimly.Infrastructure.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 var config = builder.Configuration;
 
 builder.Services.AddPersistenceMethod(config);
+builder.Services.AddSharedLayer(config);
 
 var app = builder.Build();
 
