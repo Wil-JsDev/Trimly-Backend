@@ -5,7 +5,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
 {
     public interface IAppointmentRepository : IGenericRepository<Appointments>
     {
-        Task CancelAppointmentWithPenaltyAsync(Appointments appointments, CancellationToken cancellationToken);
+        Task CancelAppointmentWithPenaltyAsync(Appointments appointments, double penalizationPorcentage, CancellationToken cancellationToken);
 
         Task CancelAppointmentAsync(Appointments appointments, CancellationToken cancellationToken);
 
