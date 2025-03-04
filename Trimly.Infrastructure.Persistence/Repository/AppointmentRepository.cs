@@ -11,7 +11,6 @@ namespace Trimly.Infrastructure.Persistence.Repository
         public AppointmentRepository(TrimlyContext context) : base(context){}
 
         
-
         public async Task CancelAppointmentAsync(Appointments appointments, CancellationToken cancellationToken)
         {
             appointments.AppointmentStatus = AppointmentStatus.Cancelled;
@@ -21,7 +20,10 @@ namespace Trimly.Infrastructure.Persistence.Repository
 
         public async Task CancelAppointmentWithPenaltyAsync(Appointments appointments, CancellationToken cancellationToken)
         {
-            
+            appointments.Services.PenaltyAmount = appointments.Services.Price * 0.10m;
+            appointments.AppointmentStatus = AppointmentStatus.Cancelled;
+            _context.Update(appointments);
+            await SaveChangesAsync(cancellationToken);
         }
 
         public async Task ConfirmAppointmentAutomaticallyAsync(Appointments appointments , CancellationToken cancellationToken)
