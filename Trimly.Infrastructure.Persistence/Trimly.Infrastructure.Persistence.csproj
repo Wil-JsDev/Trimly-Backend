@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Repository\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trimly.Core.Application\Trimly.Core.Application.csproj" />
     <ProjectReference Include="..\Trimly.Core.Domain\Trimly.Core.Domain.csproj" />
   </ItemGroup>
 
