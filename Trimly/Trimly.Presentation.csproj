@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trimly.Infrastructure.Persistence\Trimly.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\Trimly.Infrastructure.Shared\Trimly.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
 </Project>
