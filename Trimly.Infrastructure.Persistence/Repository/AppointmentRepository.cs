@@ -19,9 +19,14 @@ namespace Trimly.Infrastructure.Persistence.Repository
             await SaveChangesAsync(cancellationToken);
         }
 
-        public async Task CancelAppointmentWithPenaltyAsync(Appointments appointments, CancellationToken cancellationToken)
+        public async Task CancelAppointmentWithPenaltyAsync(Appointments appointments, double penalizationPorcentage, CancellationToken cancellationToken)
         {
-            
+            appointments.AppointmentStatus = AppointmentStatus.Cancelled;
+            appointments.Services.PenaltyAmount = appointments.Services.Price * (decimal) (penalizationPorcentage / 100);
+            appointments.Services.Price += appointments.Services.PenaltyAmount;
+            _context.Update(appointments);
+            await SaveChangesAsync(cancellationToken);
+
         }
 
         public async Task ConfirmAppointmentAutomaticallyAsync(Appointments appointments , CancellationToken cancellationToken)

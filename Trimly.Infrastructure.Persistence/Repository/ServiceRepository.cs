@@ -9,9 +9,27 @@ namespace Trimly.Infrastructure.Persistence.Repository
     {
         public ServiceRepository(TrimlyContext context) : base(context) { }
 
-        public Task ApplyDiscountCodeAsync(Services services, Guid registeredCompaniesId, int discount, string discountCode, CancellationToken cancellationToken)
+        private string GenerateDiscountCode(double discountPercentage)
         {
-            throw new NotImplementedException();
+            string code = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
+
+            code = $"{code}-{discountPercentage}%"; 
+
+            return code;
+        }
+
+        public async Task ApplyDiscountCodeAsync(Services services, Guid registeredCompaniesId, string discountCode, CancellationToken cancellationToken)
+        {
+            var discountPercentageString = discountCode.Split('-').Last().Replace("%", "");
+            var discountPercentage = double.Parse(discountPercentageString) / 100.0;
+
+            decimal discountAmount = services.Price * (decimal)discountPercentage;
+            services.Price = services.Price - discountAmount;
+
+            services.ConfirmationCode = discountCode;
+
+            await _context.SaveChangesAsync(cancellationToken);
+
         }
 
         public async Task<IEnumerable<Services>> GetServicesByDurationInMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken) =>
