@@ -9,7 +9,7 @@ namespace Trimly.Infrastructure.Persistence.Repository
     {
         public ServiceRepository(TrimlyContext context) : base(context) { }
 
-        public string GenerateDiscountCode(double discountPercentage)
+        private string GenerateDiscountCode(double discountPercentage)
         {
             string code = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
 
