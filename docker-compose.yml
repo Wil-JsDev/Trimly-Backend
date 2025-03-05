@@ -1,0 +1,16 @@
+services:
+    
+  SEQ:
+    image: datalust/seq:latest
+    container_name: Seq-Monitoring
+    restart: always
+    environment:
+    - ACCEPT_EULA=${SEQ_ACCEPT_EULA}
+    ports:
+    - ${SEQ_PORT}:5341
+    - ${SEQ_PORT_UI}:80 
+    volumes:
+    - SeqTrimly:/data
+
+volumes:
+  SeqTrimly: 
