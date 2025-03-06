@@ -1,6 +1,8 @@
 using Serilog;
 using Trimly.Infrastructure.Persistence;
 using Trimly.Infrastructure.Shared;
+using Trimly.Infrastructure.Identity;
+using Trimly.Infrastructure.Identity.Seeds;
 
 try
 {
@@ -22,8 +24,10 @@ try
 
     builder.Services.AddPersistenceMethod(config);
     builder.Services.AddSharedLayer(config);
+    builder.Services.AddIdentityLayer(config);
 
     var app = builder.Build();
+    await app.Services.SeedDatabaseAsync();
     app.UseSerilogRequestLogging();
 
     // Configure the HTTP request pipeline.
