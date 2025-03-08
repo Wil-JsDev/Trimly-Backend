@@ -16,14 +16,12 @@ namespace Trimly.Core.Application.Interfaces.Service
 
         Task<ResultT<RescheduleAppointmentDTos>> RescheduleAppointmentAsync(Guid appointmentId, RescheduleAppointmentDTos rescheduleAppointment, CancellationToken cancellationToken);
 
-        Task<ResultT<Guid>> ConfirmAppointmentAutomaticallyAsync(AppointmentStatus appointmentStatus, CancellationToken cancellationToken);
+        Task<ResultT<Guid>> ConfirmAppointmentAutomaticallyAsync(Guid appointmentId, CancellationToken cancellationToken);
 
         Task<ResultT<Guid>> CancelAppointmentWithoutPenaltyAsync(Guid appointmentId, string cancellationReason, CancellationToken cancellationToken);
-
-        Task<ResultT<IEnumerable<AppointmentDTos>>> GetAvailableAppointmentsAsync(AppointmentDateFilterType filterType, CancellationToken cancellationToken);
-
+        
         Task<ResultT<int>> GetTotalAppointmentsCountAsync(Guid serviceId, CancellationToken cancellationToken);
-
-        Task<ResultT<AppointmentDTos>> ConfirmAppointment(Guid appointmentId, string confirmationCode, CancellationToken cancellationToken);
+        Task<ResultT<string>> CancelAppointmentWithPenaltyAsync(Guid appointmentId, double penalizationPorcentage ,CancellationToken cancellationToken);
+        Task<ResultT<ConfirmAppointmentDTos>> ConfirmAppointment(Guid appointmentId, string confirmationCode, CancellationToken cancellationToken);
     }
 }
