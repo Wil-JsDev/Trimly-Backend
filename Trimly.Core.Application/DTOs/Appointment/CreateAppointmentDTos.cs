@@ -5,10 +5,8 @@ namespace Trimly.Core.Application.DTOs.Appointment
 {
     public sealed record CreateAppointmentDTos
     (
-        DateTime? StarDateTime,
-        DateTime? EndDateTime,
-        AppointmentStatus AppointmentStatus, 
-        string? CancellationReason,
+        DateTime StarDateTime,
+        DateTime EndDateTime,
         Guid? ServiceId
     );
 }

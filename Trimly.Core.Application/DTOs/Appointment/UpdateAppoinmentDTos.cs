@@ -5,7 +5,6 @@ namespace Trimly.Core.Application.DTOs.Appointment
     (
         DateTime? StarDateTime,
         DateTime? EndDateTime,
-        string? CancellationReason,
         Guid? ServiceId
     );
 }
