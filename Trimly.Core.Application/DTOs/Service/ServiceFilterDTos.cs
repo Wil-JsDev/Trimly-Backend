@@ -7,9 +7,6 @@ namespace Trimly.Core.Application.DTOs.Service
         decimal Price,
         string? Description,
         int DurationInMinutes,
-        string? ImageUrl,
-        Guid? RegisteredCompanyId,
-        DateTime? CreatedAt,
-        DateTime? UpdateAt
+        string? ImageUrl
     );
 }
