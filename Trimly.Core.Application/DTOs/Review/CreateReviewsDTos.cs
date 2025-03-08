@@ -5,6 +5,7 @@ namespace Trimly.Core.Application.DTOs.Review
     (
         string? Title,
         string? Comment,
-        int Rating
+        int Rating,
+        Guid? RegisteredCompanyId
     );
 }
