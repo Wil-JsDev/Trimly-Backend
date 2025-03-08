@@ -11,7 +11,7 @@ namespace Trimly.Core.Domain.Models
 
         public DateTime? EndDateTime { get; set; }
 
-        public AppointmentStatus? AppointmentStatus { get; set; }
+        public AppointmentStatus AppointmentStatus { get; set; }
 
         public string? ConfirmationCode { get; set; }
 
