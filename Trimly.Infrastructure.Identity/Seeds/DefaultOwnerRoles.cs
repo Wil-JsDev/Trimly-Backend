@@ -8,7 +8,7 @@ namespace Trimly.Infrastructure.Identity.Seeds
     {
         public static async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            User role = new()
+            User ownerUser = new()
             {
                 UserName = "OwnerDW",
                 FirstName = "DW",
@@ -18,13 +18,15 @@ namespace Trimly.Infrastructure.Identity.Seeds
                 PhoneNumberConfirmed = true
             };
 
-            if (userManager.Users.All(b => b.Id != role.Id))
+            if (userManager.Users.All(b => b.Id != ownerUser.Id))
             {
-                var user = await userManager.FindByEmailAsync(role.Email);
+                var user = await userManager.FindByEmailAsync(ownerUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(role, "SecureP@ss123");
-                    await userManager.AddToRoleAsync(role, Roles.Owner.ToString());
+                    await userManager.CreateAsync(ownerUser, "SecureP@ss123");
+                    await userManager.AddToRoleAsync(ownerUser, Roles.Owner.ToString());
+                    await userManager.AddToRoleAsync(ownerUser, Roles.Barber.ToString());
+                    await userManager.AddToRoleAsync(ownerUser, Roles.Client.ToString());
                 }
             }
         }
