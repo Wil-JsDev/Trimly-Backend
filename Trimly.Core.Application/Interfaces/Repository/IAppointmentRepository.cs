@@ -14,7 +14,9 @@ namespace Trimly.Core.Application.Interfaces.Repository
         Task ConfirmAppointmentAutomaticallyAsync(Appointments appointments,CancellationToken cancellationToken);
 
         Task<int> GetTotalAppointmentCountAsync(Guid serviceId, CancellationToken cancellationToken);
-
+        
         Task<IEnumerable<Appointments>> FilterByStatusAsync(AppointmentStatus appointmentStatus, CancellationToken cancellationToken);
+
+        Task<bool> ValidateAppointmentAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
     }
 }

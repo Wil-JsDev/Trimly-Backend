@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq.Expressions;
+using System.Threading;
 using Trimly.Core.Application.Pagination;
 
 namespace Trimly.Core.Application.Interfaces.Repository
@@ -17,5 +18,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
         Task<PagedResult<TEntity>> GetPagedResultAsync(int pageNumber,int pageSize, CancellationToken cancellationToken);
 
         Task SaveChangesAsync(CancellationToken cancellationToken);
+
+        Task<bool> ValidateAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

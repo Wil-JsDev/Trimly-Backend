@@ -32,11 +32,18 @@ namespace Trimly.Infrastructure.Persistence.Repository
 
         }
 
+        public async Task<IEnumerable<Services>> GetServicesByCompanyIdAsync(Guid companyId,
+            CancellationToken cancellationToken) => 
+        await _context.Set<Services>()
+            .AsNoTracking()
+            .Where(x => x.RegisteredCompanyId == companyId)
+            .ToListAsync(cancellationToken);
+        
         public async Task<IEnumerable<Services>> GetServicesByDurationInMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken) =>
             await _context.Set<Services>()
             .AsNoTracking()
             .Where(d => d.DurationInMinutes == durationInMinutes)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         public async Task<IEnumerable<Services>> GetServicesByNameAsync(Guid registeredCompaniesId, string name,  CancellationToken cancellationToken) => 
             await _context.Set<Services>()

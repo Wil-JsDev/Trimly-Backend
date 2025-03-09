@@ -4,12 +4,12 @@ namespace Trimly.Core.Application.DTOs.Schedules
 {
     public sealed record SchedulesDTos
     (
-        Guid? ShedulesId,
+        Guid? SchedulesId,
         Weekday? Days,
         TimeOnly OpeningTime,
         TimeOnly ClosingTime,
         string? Notes,
-        Status? IsHolady,
+        Status? IsHoliday,
         Guid? RegisteredCompanyId,
         DateTime? CreatedAt,
         DateTime? UpdateAt

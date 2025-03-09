@@ -7,8 +7,6 @@ namespace Trimly.Core.Application.DTOs.Appointment
         DateTime? StartDateTime,
         DateTime? EndDateTime,
         AppointmentStatus AppointmentStatus,
-        string? ConfirmationCode,
-        string? CancellationReason,
         Guid? ServiceId,
         DateTime? CreatedAt,
         DateTime? UpdateAt

@@ -7,7 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Trimly.Core.Application.Interfaces.Repository;
 using Trimly.Infrastructure.Persistence.Context;
+using Trimly.Infrastructure.Persistence.Repository;
 
 namespace Trimly.Infrastructure.Persistence
 {
@@ -23,6 +25,15 @@ namespace Trimly.Infrastructure.Persistence
                     c => c.MigrationsAssembly(typeof(TrimlyContext).Assembly.FullName));
             });
 
+            #endregion
+
+            #region  DI
+            Services.AddTransient<IAppointmentRepository,AppointmentRepository> ();
+            Services.AddTransient<IRegisteredCompanyRepository, RegisteredCompanyRepository>();
+            Services.AddTransient<IReviewsRepository, ReviewRepository>();
+            Services.AddTransient<ISchedulesRepository, SchedulesRepository>();
+            Services.AddTransient<IServiceRepository, ServiceRepository>();
+            Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             #endregion
         }
 
