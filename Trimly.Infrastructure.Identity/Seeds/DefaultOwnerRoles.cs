@@ -4,15 +4,15 @@ using Trimly.Infrastructure.Identity.Models;
 
 namespace Trimly.Infrastructure.Identity.Seeds
 {
-    public static class DefaultSuperAdminRoles
+    public static class DefaultOwnerRoles
     {
         public static async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             User role = new()
             {
-                UserName = "SuperAdminWD",
-                FirstName = "Super",
-                LastName = "Admin",
+                UserName = "OwnerDW",
+                FirstName = "DW",
+                LastName = "DW",
                 Email = "trimlydw@gmail.com",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
@@ -24,7 +24,7 @@ namespace Trimly.Infrastructure.Identity.Seeds
                 if (user == null)
                 {
                     await userManager.CreateAsync(role, "SecureP@ss123");
-                    await userManager.AddToRoleAsync(role, Roles.SuperAdministrador.ToString());
+                    await userManager.AddToRoleAsync(role, Roles.Owner.ToString());
                 }
             }
         }

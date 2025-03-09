@@ -18,7 +18,7 @@ namespace Trimly.Infrastructure.Identity.Seeds
                 var userManager = scopedServices.GetRequiredService<UserManager<User>>();
                 var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
 
-                await DefaultSuperAdminRoles.SeedAsync(userManager, roleManager);
+                await DefaultOwnerRoles.SeedAsync(userManager, roleManager);
                 await DefaultRoles.SeedAsync(userManager, roleManager);
 
                 logger.LogInformation("Database seeding completed successfully");

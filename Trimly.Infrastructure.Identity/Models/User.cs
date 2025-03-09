@@ -12,5 +12,6 @@ namespace Trimly.Infrastructure.Identity.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set;}
         public DateTime? CreateAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdateAt  { get; set; }
     }
 }
