@@ -9,7 +9,7 @@ namespace Trimly.Core.Application.Interfaces.Service
         UpdateSchedulesDTos,
         SchedulesDTos>
     {
-        Task<ResultT<bool>> ActivatedIsHolidayAsync(CancellationToken cancellationToken);
+        Task<ResultT<string>> ActivatedIsHolidayAsync(Guid registeredCompany,CancellationToken cancellationToken);
 
         Task<ResultT<IEnumerable<SchedulesDTos>>> FilterByOpeningTimeAsync(Guid registeredCompany, TimeOnly openingTime, CancellationToken cancellationToken);
 

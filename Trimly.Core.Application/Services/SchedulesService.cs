@@ -185,12 +185,24 @@ public class SchedulesService : ISchedulesService
 
         return ResultT<Guid>.Success(schedule.SchedulesId ?? Guid.Empty);
     }
-
-    public async Task<ResultT<bool>> ActivatedIsHolidayAsync(CancellationToken cancellationToken)
+    public async Task<ResultT<string>> ActivatedIsHolidayAsync(Guid registeredCompany, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
+        var schedules = await _repository.GetScheduleByCompanyIdAsync(registeredCompany, cancellationToken);
+        if (schedules == null)
+        {
+            _logger.LogError("Company with ID {CompanyId} was not found.", registeredCompany);
+            return ResultT<string>.Failure(Error.NotFound("404", $"Company with ID {registeredCompany} was not found."));
+        }
 
+        schedules.IsHoliday = Status.Activated;
+
+        await _repository.UpdateAsync(schedules, cancellationToken);
+    
+        _logger.LogInformation("Holiday status for Company ID {CompanyId} has been successfully activated.", registeredCompany);
+
+        return ResultT<string>.Success("The holiday status has been successfully activated.");
+    }
+    
     public async Task<ResultT<IEnumerable<SchedulesDTos>>> FilterByOpeningTimeAsync(Guid registeredCompany, TimeOnly openingTime, CancellationToken cancellationToken)
     {
         var registeredCompanies = await _registeredCompaniesRepository.GetByIdAsync(registeredCompany, cancellationToken);
