@@ -1,4 +1,5 @@
-﻿
+﻿using Microsoft.AspNetCore.Http;
+
 namespace Trimly.Core.Application.DTOs.RegisteredCompanies
 {
     public sealed record CreateRegisteredCompaniesDTos
@@ -9,7 +10,6 @@ namespace Trimly.Core.Application.DTOs.RegisteredCompanies
         string? AddresCompanies,
         string? Email,
         string? DescriptionCompanies,
-        string? LogoUrl,
-        Domain.Enum.Status? Status
+        IFormFile? ImageFile
     );
 }

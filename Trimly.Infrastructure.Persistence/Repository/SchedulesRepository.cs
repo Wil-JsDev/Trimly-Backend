@@ -37,5 +37,11 @@ namespace Trimly.Infrastructure.Persistence.Repository
             .Include(s => s.RegisteredCompanies)
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
+
+        public async Task<Schedules> GetScheduleByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken) =>
+            await _context.Set<Schedules>()
+                .AsNoTracking()
+                .Where(s => s.RegisteredCompanyId == companyId)
+                .FirstOrDefaultAsync(cancellationToken);
     }
 }

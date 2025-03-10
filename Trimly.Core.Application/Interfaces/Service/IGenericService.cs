@@ -15,7 +15,7 @@ namespace Trimly.Core.Application.Interfaces.Service
 
         Task<ResultT<TResponseDTo>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task<ResultT<TResponseDTo>> CreateAsync(TCreateDTo entity, CancellationToken cancellationToken);
+        Task<ResultT<TResponseDTo>> CreateAsync(TCreateDTo entityCreateDTo, CancellationToken cancellationToken);
 
         Task<ResultT<TResponseDTo>> UpdateAsync(Guid id, TUpdateDTo entity,CancellationToken cancellation);
 

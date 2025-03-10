@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Trimly.Core.Application.Interfaces.Repository;
 using Trimly.Core.Application.Pagination;
 using Trimly.Infrastructure.Persistence.Context;
@@ -41,7 +42,12 @@ namespace Trimly.Infrastructure.Persistence.Repository
         }
 
         public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _context.SaveChangesAsync();
-
+        public async Task<bool> ValidateAsync(Expression<Func<T, bool>> predicate)
+        {
+            var exists = await _context.Set<T>().AnyAsync(predicate);
+            return exists;
+        }
+        
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
             _context.Attach(entity);

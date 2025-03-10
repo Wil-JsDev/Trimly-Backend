@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+
 namespace Trimly.Core.Application.DTOs.Service
 {
     public sealed record CreateServiceDTos
@@ -7,8 +9,7 @@ namespace Trimly.Core.Application.DTOs.Service
         decimal Price,
         string? Description,
         int DurationInMinutes,
-        string? ImageUrl,
-        Guid? RegisteredCompanyId,
-        decimal PenaltyAmount
+        IFormFile? ImageFile,
+        Guid? RegisteredCompanyId
     );
 }
