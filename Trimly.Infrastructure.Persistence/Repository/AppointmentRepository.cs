@@ -10,8 +10,16 @@ namespace Trimly.Infrastructure.Persistence.Repository
     {
         public AppointmentRepository(TrimlyContext context) : base(context){}
 
+        public async Task<bool> ValidateAppointmentAsync(DateTime startDate, DateTime endDate,CancellationToken cancellationToken)
+        {
+            var exists = await  _context.Set<Appointments>()
+                                        .AsNoTracking()
+                                        .Where(x => x.StartDateTime < endDate && x.EndDateTime > startDate)
+                                        .AnyAsync(cancellationToken);
+            
+            return exists;
+        }
         
-
         public async Task CancelAppointmentAsync(Appointments appointments, CancellationToken cancellationToken)
         {
             appointments.AppointmentStatus = AppointmentStatus.Cancelled;
@@ -19,9 +27,14 @@ namespace Trimly.Infrastructure.Persistence.Repository
             await SaveChangesAsync(cancellationToken);
         }
 
-        public async Task CancelAppointmentWithPenaltyAsync(Appointments appointments, CancellationToken cancellationToken)
+        public async Task CancelAppointmentWithPenaltyAsync(Appointments appointments, double penalizationPorcentage, CancellationToken cancellationToken)
         {
-            
+            appointments.AppointmentStatus = AppointmentStatus.Cancelled;
+            appointments.Services.PenaltyAmount = appointments.Services.Price * (decimal) (penalizationPorcentage / 100);
+            appointments.Services.Price += appointments.Services.PenaltyAmount;
+            _context.Update(appointments);
+            await SaveChangesAsync(cancellationToken);
+
         }
 
         public async Task ConfirmAppointmentAutomaticallyAsync(Appointments appointments , CancellationToken cancellationToken)
@@ -43,6 +56,7 @@ namespace Trimly.Infrastructure.Persistence.Repository
 
         public async Task RescheduleAppointmentAsync(Appointments appointment, CancellationToken cancellationToken)
         {
+            appointment.AppointmentStatus = AppointmentStatus.Rescheduled;
             _context.Update(appointment);
             await SaveChangesAsync(cancellationToken);
         }

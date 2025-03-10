@@ -12,5 +12,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
         Task<IEnumerable<Schedules>> FilterByWeekDayAsync(Weekday weekday, CancellationToken cancellationToken);
 
         Task<IEnumerable<Schedules>> GetSchedulesByCompanyId(Guid registeredCompanyId, CancellationToken cancellationToken);
+
+        Task<Schedules> GetScheduleByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken);
     }
 }
