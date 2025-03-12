@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Trimly.Core.Application.Interfaces.Service;
 using Trimly.Core.Application.Services;
+using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application
 {
@@ -13,6 +14,7 @@ namespace Trimly.Core.Application
             services.AddScoped<IServicesService, ServicesService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ISchedulesService, SchedulesService>();
+            services.AddSingleton<AppointmentQueue>();
             return services;
         }
     }
