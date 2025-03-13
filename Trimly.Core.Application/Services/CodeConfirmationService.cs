@@ -32,7 +32,7 @@ public class CodeConfirmationService : ICodeConfirmationService
         // Garantizar unicidad por usuario
         _generatedCodes[emailAddress] = randomString;
 
-        await _emailService.SenAsync(new EmailRequestDTos
+        await _emailService.SendAsync(new EmailRequestDTos
         {
             To = emailAddress,
             Body = $@"
