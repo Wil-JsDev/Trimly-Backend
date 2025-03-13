@@ -22,7 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Trimly.Core.Domain\Trimly.Core.Domain.csproj" />
+    <ProjectReference Include="..\Trimly.Core.Application\Trimly.Core.Application.csproj" />
+    <ProjectReference Include="..\Trimly.Infrastructure.Shared\Trimly.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
 </Project>
