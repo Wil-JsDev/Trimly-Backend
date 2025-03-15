@@ -96,8 +96,7 @@ public class ReviewService : IReviewService
             Title = createAppointmentDTos.Title,
             Comment = createAppointmentDTos.Comment,
             Rating = createAppointmentDTos.Rating,
-            RegisteredCompanyId = createAppointmentDTos.RegisteredCompanyId,
-            UpdateAt = DateTime.UtcNow
+            RegisteredCompanyId = createAppointmentDTos.RegisteredCompanyId
         };
         
         await _reviewsRepository.AddAsync(reviews, cancellationToken);
