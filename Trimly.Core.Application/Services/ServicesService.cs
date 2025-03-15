@@ -190,7 +190,7 @@ public class ServicesService : IServicesService
         var service = await _repository.GetByIdAsync(id, cancellation);
         if (service == null)
         {
-            _logger.LogError("");
+            _logger.LogError("Service with ID {ServiceId} not found.", id);
             
             return ResultT<Guid>.Failure(Error.NotFound("404", $"{id} Service not found."));
         }
