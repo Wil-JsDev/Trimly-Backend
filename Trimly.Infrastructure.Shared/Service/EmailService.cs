@@ -17,7 +17,7 @@ namespace Trimly.Infrastructure.Shared.Service
             _mailSettings = mailSettings.Value;
         }
 
-        public async Task SenAsync(EmailRequestDTos request)
+        public async Task SendAsync(EmailRequestDTos request)
         {
             try
             {

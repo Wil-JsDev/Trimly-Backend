@@ -5,6 +5,6 @@ namespace Trimly.Core.Application.Interfaces.Service
 {
     public interface IEmailService
     {
-        Task SenAsync(EmailRequestDTos emailRequest);
+        Task SendAsync(EmailRequestDTos emailRequest);
     }
 }
