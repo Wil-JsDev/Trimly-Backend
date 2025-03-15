@@ -12,15 +12,15 @@ using Trimly.Infrastructure.Persistence.Context;
 namespace Trimly.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TrimlyContext))]
-    [Migration("20250227151045_DeleteReservationTable")]
-    partial class DeleteReservationTable
+    [Migration("20250313013611_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -196,6 +196,9 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ConfirmationCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -213,6 +216,9 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("PenaltyAmount")
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
