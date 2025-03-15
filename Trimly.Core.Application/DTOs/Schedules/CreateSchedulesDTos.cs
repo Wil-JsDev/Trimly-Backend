@@ -7,7 +7,6 @@ namespace Trimly.Core.Application.DTOs.Schedules
         TimeOnly OpeningTime,
         TimeOnly ClosingTime,
         string? Notes,
-        Status? IsHoliday,  
         Guid? RegisteredCompanyId
     );
 }

@@ -97,7 +97,7 @@ public class SchedulesService : ISchedulesService
     {
         if (entityCreateDTo == null)
         {
-            _logger.LogError("");
+            _logger.LogError("Error: Received a null object in CreateAsync.");
             
             return ResultT<SchedulesDTos>.Failure(Error.Failure("400", "CreateReviewsDTos parameters are required."));
         }
@@ -109,12 +109,14 @@ public class SchedulesService : ISchedulesService
             OpeningTime = entityCreateDTo.OpeningTime,
             ClosingTime = entityCreateDTo.ClosingTime,
             Notes = entityCreateDTo.Notes,
-            IsHoliday = entityCreateDTo.IsHoliday,
+            IsHoliday = Status.Deactivated,
             RegisteredCompanyId = entityCreateDTo.RegisteredCompanyId
         };
         
         await _repository.AddAsync(schedules, cancellationToken);
-
+        
+        _logger.LogInformation("Creating a new schedule for the company with ID: {RegisteredCompanyId}", entityCreateDTo.RegisteredCompanyId);
+        
         SchedulesDTos schedulesDTos = new
         (
             SchedulesId: schedules.SchedulesId,
@@ -128,7 +130,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         );
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedule successfully created with ID: {SchedulesId}", schedules.SchedulesId);
 
         return ResultT<SchedulesDTos>.Success(schedulesDTos);
     }
@@ -138,11 +140,13 @@ public class SchedulesService : ISchedulesService
        var schedule = await _repository.GetByIdAsync(id, cancellation);
        if (schedule == null)
        {
-           _logger.LogError("");
+           _logger.LogError("Error: Schedule with ID {ScheduleId} was not found.", id);
            
            return ResultT<SchedulesDTos>.Failure(Error.Failure("404", "Schedule with ID {0} was not found."));
        }
-
+        
+       _logger.LogInformation("Updating schedule with ID: {ScheduleId}", id);
+       
        schedule.Week = entity.Days;
        schedule.OpeningTime = entity.OpeningTime;
        schedule.ClosingTime = entity.ClosingTime;
@@ -164,7 +168,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         );
        
-       _logger.LogInformation("");
+        _logger.LogInformation("Schedule with ID {ScheduleId} successfully updated.", id);
 
        return ResultT<SchedulesDTos>.Success(schedulesDTos);
     }
@@ -174,14 +178,16 @@ public class SchedulesService : ISchedulesService
         var schedule = await _repository.GetByIdAsync(id, cancellation);
         if (schedule == null)
         {
-            _logger.LogError("");
+            _logger.LogError("Error: Schedule with ID {ScheduleId} was not found.", id);
 
             return ResultT<Guid>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
         }
         
+        _logger.LogInformation("Deleting schedule with ID: {ScheduleId}", id);
+        
         await _repository.DeleteAsync(schedule, cancellation);
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedule with ID {ScheduleId} successfully deleted.", id);
 
         return ResultT<Guid>.Success(schedule.SchedulesId ?? Guid.Empty);
     }
@@ -190,7 +196,7 @@ public class SchedulesService : ISchedulesService
         var schedules = await _repository.GetScheduleByCompanyIdAsync(registeredCompany, cancellationToken);
         if (schedules == null)
         {
-            _logger.LogError("Company with ID {CompanyId} was not found.", registeredCompany);
+            _logger.LogError("Company with ID ø{CompanyId} was not found.", registeredCompany);
             return ResultT<string>.Failure(Error.NotFound("404", $"Company with ID {registeredCompany} was not found."));
         }
 
@@ -208,18 +214,19 @@ public class SchedulesService : ISchedulesService
         var registeredCompanies = await _registeredCompaniesRepository.GetByIdAsync(registeredCompany, cancellationToken);
         if (registeredCompanies == null)
         {
-            _logger.LogError("");
+            _logger.LogError("Error: Registered company with ID {CompanyId} was not found.", registeredCompany);
 
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", $"Registered company with ID {registeredCompany} was not found."));
         }
-        
+
         var schedules = await _repository.FilterByOpeningTimeAsync(openingTime, cancellationToken);
         if (schedules == null || !schedules.Any())
         {
-            _logger.LogError("");
+            _logger.LogWarning("Warning: No schedules found for registered company ID {CompanyId} with opening time {OpeningTime}.", registeredCompany, openingTime);
 
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", "Schedule with ID {0} was not found."));
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", $"No schedules found for registered company ID {registeredCompany} with opening time {openingTime}."));
         }
+
 
         IEnumerable<SchedulesDTos> schedulesDTos = schedules.Select(x => new SchedulesDTos
         (
@@ -234,7 +241,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         ));
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedules successfully retrieved for company ID {CompanyId} with opening time {OpeningTime}.", registeredCompany, openingTime);
         
         return ResultT<IEnumerable<SchedulesDTos>>.Success(schedulesDTos);
     }
@@ -244,18 +251,19 @@ public class SchedulesService : ISchedulesService
         var registeredCompanies = await _registeredCompaniesRepository.GetByIdAsync(registeredCompany, cancellationToken);
         if (registeredCompanies == null)
         {
-            _logger.LogError("");
-            
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
+            _logger.LogError("Error: Registered company with ID {CompanyId} was not found.", registeredCompany);
+    
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", $"Registered company with ID {registeredCompany} was not found."));
         }
-        
-        var schedulesIsHoliday = await _repository.FilterByIsHolidayAsync(registeredCompany, isHoliday ,cancellationToken);
+
+        var schedulesIsHoliday = await _repository.FilterByIsHolidayAsync(registeredCompany, isHoliday, cancellationToken);
         if (schedulesIsHoliday == null || !schedulesIsHoliday.Any())
         {
-            _logger.LogError("");
-            
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", "Schedule with ID {0} was not found."));
+            _logger.LogWarning("Warning: No schedules found for company ID {CompanyId} with holiday status {IsHoliday}.", registeredCompany, isHoliday);
+    
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", $"No schedules found for company ID {registeredCompany} with holiday status {isHoliday}."));
         }
+
 
         IEnumerable<SchedulesDTos> schedulesDTos = schedulesIsHoliday.Select(x => new SchedulesDTos
         (
@@ -270,7 +278,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         ));
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedules successfully retrieved for company ID {CompanyId} with holiday status {IsHoliday}.", registeredCompany, isHoliday);
         
         return ResultT<IEnumerable<SchedulesDTos>>.Success(schedulesDTos);
     }
@@ -280,23 +288,23 @@ public class SchedulesService : ISchedulesService
         var registeredCompanies = await _registeredCompaniesRepository.GetByIdAsync(registeredCompany, cancellationToken);
         if (registeredCompanies == null)
         {
-            _logger.LogError("");
-            
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
+            _logger.LogError("Error: Registered company with ID {CompanyId} was not found.", registeredCompany);
+    
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", $"Registered company with ID {registeredCompany} was not found."));
         }
-        
+
         var existsWeekDay = await _repository.ValidateAsync(x => x.Week == weekday);
         if (!existsWeekDay)
         {
-            _logger.LogError("");
-            
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
+            _logger.LogWarning("Warning: No schedules found for the specified weekday: {Weekday}.", weekday);
+    
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", $"No schedules found for the specified weekday: {weekday}."));
         }
         
         var schedulesByWeekDay = await _repository.FilterByWeekDayAsync(weekday, cancellationToken);
         if (schedulesByWeekDay == null || !schedulesByWeekDay.Any())
         {
-            _logger.LogError("");
+            _logger.LogError("No schedules found for company ID {CompanyId} on weekday {Weekday}.", registeredCompany, weekday);
             
             return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", "Schedule with ID {0} was not found."));
         }
@@ -314,7 +322,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         ));
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedules successfully retrieved for company ID {CompanyId} on weekday {Weekday}.", registeredCompany, weekday);
 
         return ResultT<IEnumerable<SchedulesDTos>>.Success(schedulesDTos);
     }
@@ -324,17 +332,17 @@ public class SchedulesService : ISchedulesService
         var registeredCompanies = await _registeredCompaniesRepository.GetByIdAsync(registeredCompanyId, cancellationToken);
         if (registeredCompanies == null)
         {
-            _logger.LogError("");
-            
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", "Schedule with ID {0} was not found."));
+            _logger.LogError("Error: Registered company with ID {CompanyId} was not found.", registeredCompanyId);
+    
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.NotFound("404", $"Registered company with ID {registeredCompanyId} was not found."));
         }
 
         var schedulesByCompany = await _repository.GetSchedulesByCompanyId(registeredCompanyId, cancellationToken);
         if (schedulesByCompany == null || !schedulesByCompany.Any())
         {
-            _logger.LogError("");
+            _logger.LogWarning("Warning: No schedules found for company ID {CompanyId}.", registeredCompanyId);
 
-            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", "Schedule with ID {0} was not found."));
+            return ResultT<IEnumerable<SchedulesDTos>>.Failure(Error.Failure("400", $"No schedules found for company ID {registeredCompanyId}."));
         }
         
         IEnumerable<SchedulesDTos> schedulesDTos = schedulesByCompany.Select(x => new SchedulesDTos
@@ -350,7 +358,7 @@ public class SchedulesService : ISchedulesService
             UpdateAt: DateTime.UtcNow
         ));
         
-        _logger.LogInformation("");
+        _logger.LogInformation("Schedules successfully retrieved for company ID {CompanyId}.", registeredCompanyId);
         
         return ResultT<IEnumerable<SchedulesDTos>>.Success(schedulesDTos);
     }

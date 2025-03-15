@@ -12,10 +12,12 @@ public class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _repository;
     private readonly ILogger<AppointmentService> _logger;
-    public AppointmentService(IAppointmentRepository repository, ILogger<AppointmentService> logger)
+    private readonly IServiceRepository _serviceRepository;
+    public AppointmentService(IAppointmentRepository repository, ILogger<AppointmentService> logger,IServiceRepository serviceRepository)
     {
         _repository = repository;
         _logger = logger;
+        _serviceRepository = serviceRepository;
     }
     
     public async Task<ResultT<PagedResult<AppointmentDTos>>> GetPagedResult(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -246,6 +248,8 @@ public class AppointmentService : IAppointmentService
             return ResultT<RescheduleAppointmentDTos>.Failure(Error.NotFound("404", "Appointment not found.")); 
         }
 
+        appointment.StartDateTime = rescheduleAppointment.newStartDateTime;
+        appointment.EndDateTime = rescheduleAppointment.newEndDateTime;
         appointment.UpdateAt = DateTime.UtcNow;
         
         await _repository.RescheduleAppointmentAsync(appointment,cancellationToken);
@@ -306,8 +310,8 @@ public class AppointmentService : IAppointmentService
     
     public async Task<ResultT<int>> GetTotalAppointmentsCountAsync(Guid serviceId, CancellationToken cancellationToken)
     {
-        var appointment = await _repository.GetByIdAsync(serviceId, cancellationToken);
-        if (appointment == null)
+        var services = await _serviceRepository.GetByIdAsync(serviceId, cancellationToken); 
+        if (services == null)
         {
             _logger.LogError("Service with ServiceId: {ServiceId} not found.", serviceId);
             

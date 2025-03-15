@@ -185,14 +185,8 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.EndDateTime)
                     .IsRequired();
-                entity.Property(e => e.CancellationReason)
-                    .HasMaxLength(150)
-                    .IsRequired();
                 entity.Property(e => e.AppointmentId)
                     .ValueGeneratedOnAdd();
-                entity.Property(e => e.AppointmentStatus)
-                    .IsRequired()
-                    .HasConversion<string>();
             });
 
             #endregion

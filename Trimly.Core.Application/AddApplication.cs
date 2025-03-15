@@ -14,7 +14,7 @@ namespace Trimly.Core.Application
             services.AddScoped<IServicesService, ServicesService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ISchedulesService, SchedulesService>();
-            services.AddSingleton<AppointmentQueue>();
+            services.AddScoped<AppointmentQueue>();
             return services;
         }
     }
