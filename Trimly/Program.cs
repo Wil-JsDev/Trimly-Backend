@@ -4,9 +4,7 @@ using Trimly.Infrastructure.Persistence;
 using Trimly.Infrastructure.Shared;
 using Trimly.Infrastructure.Identity;
 using Trimly.Infrastructure.Identity.Seeds;
-using Trimly.Presentation.BackgroundService;
 using Trimly.Presentation.ServiceExtension;
-using Microsoft.Extensions.DependencyInjection;
 using Trimly.Presentation.Extensions;
 
 try
