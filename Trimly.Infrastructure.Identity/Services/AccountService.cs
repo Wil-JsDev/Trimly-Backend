@@ -28,73 +28,6 @@ public class AccountService(
 
     : IAccountService
 {
-    private async Task<JwtSecurityToken> GenerateTokenAsync(User user)
-    {
-         var userClaims = await userManager.GetClaimsAsync(user);
-         var roles = await userManager.GetRolesAsync(user);
-     
-     List<Claim> rolesClaims = new List<Claim>();
-     
-     foreach (var role in roles)
-     {
-         rolesClaims.Add(new Claim("roles", role));
-     }
-
-     var claim = new[]
-     {
-         new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-         new Claim(JwtRegisteredClaimNames.Email, user.Email),
-         new Claim("Id", user.Id)
-     }
-     .Union(userClaims)
-     .Union(rolesClaims);
-         
-         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
-         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-         var jwtSecurityToken = new JwtSecurityToken
-         (
-            issuer: jwtSettings.Issuer,
-            audience: jwtSettings.Audience,
-            claims: claim,
-            expires: DateTime.Now.AddMinutes(jwtSettings.DurationInMinutes),
-            signingCredentials: signingCredentials
-         );
-         return jwtSecurityToken;
-    }
-
-    private RefreshToken GenerateRefreshToken()
-    {
-        return new RefreshToken
-        {
-            Token = RandomTokenString(),
-            Expired = DateTime.UtcNow.AddDays(7),
-            Created = DateTime.UtcNow
-        };
-    }
-
-    private string RandomTokenString()
-    {
-        using var rng = RandomNumberGenerator.Create();
-        var randomBytes = new Byte[40];
-        rng.GetBytes(randomBytes);
-        return BitConverter.ToString(randomBytes);
-    }
-    
-    private async Task<string> SendVerificationEmailUrlAsync(User user)
-    {
-        var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        return code;
-    }
-
-    private async Task<string> SendForgotPasswordAsync(User user)
-    {
-        var code = await userManager.GeneratePasswordResetTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        return code;
-    }
     
     public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest request)
     {
@@ -162,8 +95,7 @@ public class AccountService(
             LastName = request.LastName,
             UserName = request.UserName,
             PhoneNumber = request.PhoneNumber,
-            Email = request.Email,
-            CreateAt = DateTime.UtcNow
+            Email = request.Email
         };
         
         var result = await userManager.CreateAsync(owner, request.Password);
@@ -245,7 +177,6 @@ public class AccountService(
             UserName = request.UserName,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            CreateAt = DateTime.UtcNow
         };
         
         var result = await userManager.CreateAsync(user, request.Password);
@@ -414,5 +345,78 @@ public class AccountService(
         await signInManager.SignOutAsync();
         
     }
+    
+    private async Task<JwtSecurityToken> GenerateTokenAsync(User user)
+    {
+         var userClaims = await userManager.GetClaimsAsync(user);
+         var roles = await userManager.GetRolesAsync(user);
+     
+     List<Claim> rolesClaims = new List<Claim>();
+     
+     foreach (var role in roles)
+     {
+         rolesClaims.Add(new Claim("roles", role));
+     }
+
+     var claim = new[]
+     {
+         new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+         new Claim(JwtRegisteredClaimNames.Email, user.Email),
+         new Claim("Id", user.Id)
+     }
+     .Union(userClaims)
+     .Union(rolesClaims);
+         
+         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
+         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+         var jwtSecurityToken = new JwtSecurityToken
+         (
+            issuer: jwtSettings.Issuer,
+            audience: jwtSettings.Audience,
+            claims: claim,
+            expires: DateTime.Now.AddMinutes(jwtSettings.DurationInMinutes),
+            signingCredentials: signingCredentials
+         );
+         return jwtSecurityToken;
+    }
+
+    private RefreshToken GenerateRefreshToken()
+    {
+        return new RefreshToken
+        {
+            Token = RandomTokenString(),
+            Expired = DateTime.UtcNow.AddDays(7),
+            Created = DateTime.UtcNow
+        };
+    }
+
+    #region Private Methods
+
+    private string RandomTokenString()
+    {
+        using var rng = RandomNumberGenerator.Create();
+        var randomBytes = new Byte[40];
+        rng.GetBytes(randomBytes);
+        return BitConverter.ToString(randomBytes);
+    }
+    
+    private async Task<string> SendVerificationEmailUrlAsync(User user)
+    {
+        var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        return code;
+    }
+
+    private async Task<string> SendForgotPasswordAsync(User user)
+    {
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        return code;
+    }
+
+    #endregion
+   
 }
 
