@@ -172,11 +172,21 @@ public class RegisteredCompaniesService : IRegisteredCompaniesService
             return ResultT<RegisteredCompaniesDTos>.Failure(Error.Failure("400", $"{id} is already registered"));
         }
         
+        string? logoUrl = null;
+        if (entity.ImageFile != null)
+        {
+            using var stream = entity.ImageFile.OpenReadStream();
+            logoUrl = await _cloudinaryService.UploadImageCloudinaryAsync(
+                stream,
+                entity.ImageFile.FileName,
+                cancellation);
+        }
+        
         registeredCompany.Name = entity.Name;
         registeredCompany.Phone = entity.Phone;
         registeredCompany.Email = entity.Email;
         registeredCompany.Description = entity.DescriptionCompanies;
-        registeredCompany.LogoUrl = entity.LogoUrl;
+        registeredCompany.LogoUrl = logoUrl;
         registeredCompany.Address = entity.AddressCompany;
         registeredCompany.Status = entity.Status;
         

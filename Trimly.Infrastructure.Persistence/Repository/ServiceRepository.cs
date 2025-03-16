@@ -42,7 +42,7 @@ namespace Trimly.Infrastructure.Persistence.Repository
         public async Task<IEnumerable<Services>> GetServicesByDurationInMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken) =>
             await _context.Set<Services>()
             .AsNoTracking()
-            .Where(d => d.DurationInMinutes == durationInMinutes)
+            .Where(d =>  d.RegisteredCompanyId == registeredCompaniesId  && d.DurationInMinutes == durationInMinutes)
             .ToListAsync(cancellationToken);
 
         public async Task<IEnumerable<Services>> GetServicesByNameAsync(Guid registeredCompaniesId, string name,  CancellationToken cancellationToken) => 
