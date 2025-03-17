@@ -1,21 +1,15 @@
 ﻿using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Trimly.Core.Application.DTOs.Email;
 using Trimly.Core.Application.Interfaces.Service;
 using Trimly.Core.Domain.Settings;
 
 namespace Trimly.Infrastructure.Shared.Service
 {
-    public class EmailService : IEmailService
+    public class EmailService(IOptions<MailSettings> mailSettings) : IEmailService
     {
-        private MailSettings _mailSettings {  get; }
-
-        public EmailService(IOptions<MailSettings> mailSettings)
-        {
-            _mailSettings = mailSettings.Value;
-        }
+        private MailSettings _mailSettings {  get; } = mailSettings.Value;
 
         public async Task SendAsync(EmailRequestDTos request)
         {

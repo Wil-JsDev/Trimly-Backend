@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Trimly.Core.Application.DTOs.Account;
 using Trimly.Core.Application.DTOs.Account.Authenticate;
@@ -22,12 +23,11 @@ namespace Trimly.Infrastructure.Identity.Services;
 public class AccountService(
     UserManager<User> userManager,
     SignInManager<User> signInManager,
-    JWTSettings jwtSettings,
+    IOptions<JWTSettings> jwtSettings,
     IEmailService emailSender
-    )
-
-    : IAccountService
+    ) : IAccountService
 {
+    private JWTSettings _JwtSettings {get;} = jwtSettings.Value;
     
     public async Task<AuthenticateResponse> AuthenticateAsync(AuthenticateRequest request)
     {
@@ -368,15 +368,15 @@ public class AccountService(
      .Union(userClaims)
      .Union(rolesClaims);
          
-         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
+         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JwtSettings.Key));
          var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
          var jwtSecurityToken = new JwtSecurityToken
          (
-            issuer: jwtSettings.Issuer,
-            audience: jwtSettings.Audience,
+            issuer: _JwtSettings.Issuer,
+            audience: _JwtSettings.Audience,
             claims: claim,
-            expires: DateTime.Now.AddMinutes(jwtSettings.DurationInMinutes),
+            expires: DateTime.Now.AddMinutes(_JwtSettings.DurationInMinutes),
             signingCredentials: signingCredentials
          );
          return jwtSecurityToken;
