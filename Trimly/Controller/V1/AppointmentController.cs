@@ -155,7 +155,8 @@ public class AppointmentController(
         
         return BadRequest(result.Error);
     }
-    
+
+    /* Bug
     [HttpPost("{appointmentId}/cancel-with-penalty")]
     public async Task<IActionResult> CancelWithPenaltyAsync(
         [FromRoute] Guid appointmentId, 
@@ -172,4 +173,5 @@ public class AppointmentController(
         
         return NotFound(result.Error);
     }
+    */
 }
