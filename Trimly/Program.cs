@@ -40,7 +40,7 @@ try
     
     var app = builder.Build();
     app.UseExceptionHandler(_ => { });
-    await app.Services.SeedDatabaseAsync();
+    //await app.Services.SeedDatabaseAsync();
     app.UseSerilogRequestLogging();
 
     // Configure the HTTP request pipeline.
