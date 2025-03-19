@@ -12,8 +12,8 @@ using Trimly.Infrastructure.Persistence.Context;
 namespace Trimly.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TrimlyContext))]
-    [Migration("20250314001052_FixAppointmentColumns")]
-    partial class FixAppointmentColumns
+    [Migration("20250319034857_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,9 +192,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("ServicesId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConfirmationCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");

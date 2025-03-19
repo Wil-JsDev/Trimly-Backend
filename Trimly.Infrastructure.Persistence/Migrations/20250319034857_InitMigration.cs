@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Trimly.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -87,7 +87,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     PenaltyAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    ConfirmationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     DurationInMinutes = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -114,9 +113,9 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     AppointmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AppointmentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentStatus = table.Column<int>(type: "int", nullable: false),
                     ConfirmationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CancellationReason = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CancellationReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateAt = table.Column<DateTime>(type: "datetime2", nullable: true)

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Trimly.Core.Application.DTOs.RegisteredCompanies;
 using Trimly.Core.Application.DTOs.Service;
 using Trimly.Core.Application.Interfaces.Service;
+using Trimly.Presentation.Validations.Services;
 
 namespace Trimly.Presentation.Controller.V1;
 
@@ -12,8 +13,7 @@ namespace Trimly.Presentation.Controller.V1;
 [Route("api/v{version:apiVersion}/services")]
 public class ServicesController(
     IServicesService service,
-    IValidator<CreateServiceDTos> validatorCreate,
-    IValidator<UpdateServiceDTos> validatorUpdate) : ControllerBase
+    IValidator<CreateServiceDTos> validatorCreate, IValidator<UpdateServiceDTos> validatorUpdate) : ControllerBase
 {
 
     [HttpGet("pagination")]
@@ -78,25 +78,7 @@ public class ServicesController(
         
         return NotFound(result.Error);
     }
-
-    [HttpPost("companies/{registeredCompanyId}/services/{serviceId}/apply-discount")]
-    public async Task<IActionResult> ApplyDiscountCodeAsync(
-        [FromRoute] Guid registeredCompanyId, 
-        [FromRoute] Guid serviceId, 
-        [FromQuery] string discountCode,
-        CancellationToken cancellationToken)
-    {
-        var result = await service.ApplyDiscountCodeAsync(
-            serviceId, 
-            registeredCompanyId, 
-            discountCode, 
-            cancellationToken);
-
-        if (result.IsSuccess)
-            return Ok(result.Value);
-        
-        return BadRequest(result.Error);
-    }
+    
 
     [HttpGet("companies/{registeredCompanyId}/services/search/short-duration")]
     public async Task<IActionResult> GetServiceShortDuration([FromRoute] Guid registeredCompanyId,CancellationToken cancellationToken)

@@ -9,12 +9,11 @@ namespace Trimly.Core.Application.Interfaces.Repository
         Task<IEnumerable<Domain.Models.Services>> GetServicesByPriceAsync(Guid registeredCompaniesId, decimal price, CancellationToken cancellationToken);
 
         Task<IEnumerable<Domain.Models.Services>> GetServicesByDurationInMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken);
-
-        Task ApplyDiscountCodeAsync(Domain.Models.Services services, Guid registeredCompaniesId, string discountCode ,CancellationToken cancellationToken);
-
+        
         Task<IEnumerable<Domain.Models.Services>> GetServicesWithDurationLessThan30MinutesAsync(Guid registeredCompaniesId, CancellationToken cancellationToken);
 
         Task<IEnumerable<Domain.Models.Services>> GetServicesByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken);
+        
 
     }
 }
