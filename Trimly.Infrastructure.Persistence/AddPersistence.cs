@@ -21,8 +21,8 @@ namespace Trimly.Infrastructure.Persistence
 
             Services.AddDbContext<TrimlyContext>(b =>
             {
-                b.UseSqlServer(Configuration.GetConnectionString("TrimlyConnection"),
-                    c => c.MigrationsAssembly("Trimly.Infrastructure.Persistence"));
+                 b.UseSqlServer(Configuration.GetConnectionString("TrimlyConnection"),
+                    c => c.MigrationsAssembly(typeof(TrimlyContext).Assembly.FullName));
             });
 
             #endregion
