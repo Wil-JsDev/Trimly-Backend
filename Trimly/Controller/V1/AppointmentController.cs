@@ -111,14 +111,14 @@ public class AppointmentController(
         
         return BadRequest(result.Error);
     }
-    /* Bug
+    
     [HttpPost("confirm-appointment")]
     public IActionResult ConfirmAppointmentInBackground(Guid appointmentId)
     {
-        queue.Enqueue(appointmentId);
+        AppointmentQueue.Add(appointmentId);
         return Ok("Quote added for background confirmation");
     }
-    */
+    
     [HttpPost("{id}/cancel-without-penalty")]
     public async Task<IActionResult> CancelAppointmentWithoutPenaltyAsync(
         [FromRoute] Guid id,
