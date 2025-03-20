@@ -3,44 +3,39 @@ using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Presentation.BackgroundService;
 
-public class ConfirmAppointmentBackgroundService : Microsoft.Extensions.Hosting.BackgroundService
+public class ConfirmAppointmentBackgroundService(
+    ILogger<ConfirmAppointmentBackgroundService> logger,
+    IServiceScopeFactory serviceScopeFactory)
+    : Microsoft.Extensions.Hosting.BackgroundService
 {
-    private readonly IAppointmentService _appointmentService;
-    private readonly ILogger<ConfirmAppointmentBackgroundService> _logger;
-    private readonly AppointmentQueue _queue;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public ConfirmAppointmentBackgroundService(
-        IAppointmentService service, 
-        ILogger<ConfirmAppointmentBackgroundService> logger,
-        AppointmentQueue queue,
-        IServiceScopeFactory serviceScopeFactory)
-    {
-        _appointmentService = service;
-        _logger = logger;
-        _queue = queue;
-        _serviceScopeFactory = serviceScopeFactory;
-    }
+    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("ConfirmAppointmentBackgroundService start.");
+        logger.LogInformation("ConfirmAppointmentBackgroundService start.");
         
         while (!stoppingToken.IsCancellationRequested)
         {
-            var appointmentId = await _queue.DequeueAsync(stoppingToken);
-            if (appointmentId == null) continue;
-
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var appointmentService = scope.ServiceProvider.GetRequiredService<IAppointmentService>();
-
-                _logger.LogInformation("Processing automatic confirmation for appointment: {AppointmentId}", appointmentId);
-
-                await appointmentService.ConfirmAppointmentAutomaticallyAsync(appointmentId.Value, stoppingToken);
-            }
+            await ProcessAppointmentAsync();
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
 
-        _logger.LogInformation("ConfirmAppointmentBackgroundService stop.");
-        
+        logger.LogInformation("ConfirmAppointmentBackgroundService stop.");
     }
+
+    private async Task ProcessAppointmentAsync()
+    {
+       await Task.Run(async () =>
+        {
+            using var scope = serviceScopeFactory.CreateScope(); // Creamos un nuevo scope para servicios Scoped
+            var appointmentService = scope.ServiceProvider.GetRequiredService<IAppointmentService>(); // Obtenemos IAppointmentService
+
+            while (AppointmentQueue.Appointment.Count > 0)
+            {
+                var appointment = AppointmentQueue.Dequeue(); // Extraemos de la cola
+                await appointmentService.ConfirmAppointmentAutomaticallyAsync(appointment, CancellationToken.None);
+            }
+        });
+    }
+    
+    
 }
