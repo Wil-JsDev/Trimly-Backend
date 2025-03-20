@@ -3,7 +3,7 @@ using Trimly.Core.Application;
 using Trimly.Infrastructure.Persistence;
 using Trimly.Infrastructure.Shared;
 using Trimly.Infrastructure.Identity;
-using Trimly.Infrastructure.Identity.Seeds;
+using Trimly.Presentation.BackgroundService;
 using Trimly.Presentation.ServiceExtension;
 using Trimly.Presentation.Extensions;
 
@@ -11,6 +11,7 @@ try
 {
     Log.Information("starting server");
     var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddHostedService<ConfirmAppointmentBackgroundService>();
 
     builder.Host.UseSerilog((context, loggerConfiguration) =>
     {
@@ -23,8 +24,6 @@ try
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    //builder.Services.AddScoped<IHostedService, ConfirmAppointmentBackgroundService>();
-    //builder.Services.AddHostedService<ConfirmAppointmentBackgroundService>();
     var config = builder.Configuration;
 
     builder.Services.AddPersistenceMethod(config);
