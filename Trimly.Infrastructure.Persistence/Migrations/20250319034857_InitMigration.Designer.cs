@@ -12,15 +12,15 @@ using Trimly.Infrastructure.Persistence.Context;
 namespace Trimly.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TrimlyContext))]
-    [Migration("20250223232944_InitDB")]
-    partial class InitDB
+    [Migration("20250319034857_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -31,14 +31,11 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AppointmentStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AppointmentStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("CancellationReason")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConfirmationCode")
                         .HasColumnType("nvarchar(max)");
@@ -49,10 +46,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("EndDateTime")
                         .IsRequired()
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ReservationId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
                         .IsRequired()
@@ -67,8 +60,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
 
                     b.HasKey("AppointmentId")
                         .HasName("PkAppointment");
-
-                    b.HasIndex("ReservationId");
 
                     b.HasIndex("ServiceId");
 
@@ -115,42 +106,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .HasName("PkRegisteredCompany");
 
                     b.ToTable("RegisteredCompany", (string)null);
-                });
-
-            modelBuilder.Entity("Trimly.Core.Domain.Models.Reservations", b =>
-                {
-                    b.Property<Guid?>("ReservationsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AppointmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConfirmationCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndDateTime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<DateTime?>("StartDateTime")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ReservationsId")
-                        .HasName("PkReservation");
-
-                    b.ToTable("Reservation", (string)null);
                 });
 
             modelBuilder.Entity("Trimly.Core.Domain.Models.Reviews", b =>
@@ -256,6 +211,9 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<decimal>("PenaltyAmount")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
@@ -280,21 +238,12 @@ namespace Trimly.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Trimly.Core.Domain.Models.Appointments", b =>
                 {
-                    b.HasOne("Trimly.Core.Domain.Models.Reservations", "Reservations")
-                        .WithMany("Appointments")
-                        .HasForeignKey("ReservationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FkReservation");
-
                     b.HasOne("Trimly.Core.Domain.Models.Services", "Services")
                         .WithMany("Appointments")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FkService");
-
-                    b.Navigation("Reservations");
 
                     b.Navigation("Services");
                 });
@@ -342,11 +291,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     b.Navigation("Schedules");
 
                     b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("Trimly.Core.Domain.Models.Reservations", b =>
-                {
-                    b.Navigation("Appointments");
                 });
 
             modelBuilder.Entity("Trimly.Core.Domain.Models.Services", b =>

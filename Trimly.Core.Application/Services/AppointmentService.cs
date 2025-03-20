@@ -12,10 +12,12 @@ public class AppointmentService : IAppointmentService
 {
     private readonly IAppointmentRepository _repository;
     private readonly ILogger<AppointmentService> _logger;
-    public AppointmentService(IAppointmentRepository repository, ILogger<AppointmentService> logger)
+    private readonly IServiceRepository _serviceRepository;
+    public AppointmentService(IAppointmentRepository repository, ILogger<AppointmentService> logger,IServiceRepository serviceRepository)
     {
         _repository = repository;
         _logger = logger;
+        _serviceRepository = serviceRepository;
     }
     
     public async Task<ResultT<PagedResult<AppointmentDTos>>> GetPagedResult(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -246,6 +248,8 @@ public class AppointmentService : IAppointmentService
             return ResultT<RescheduleAppointmentDTos>.Failure(Error.NotFound("404", "Appointment not found.")); 
         }
 
+        appointment.StartDateTime = rescheduleAppointment.newStartDateTime;
+        appointment.EndDateTime = rescheduleAppointment.newEndDateTime;
         appointment.UpdateAt = DateTime.UtcNow;
         
         await _repository.RescheduleAppointmentAsync(appointment,cancellationToken);
@@ -264,8 +268,13 @@ public class AppointmentService : IAppointmentService
         
             return ResultT<Guid>.Failure(Error.NotFound("404", "Appointment not found."));
         }
-        
-        await _repository.ConfirmAppointmentAutomaticallyAsync(appointment, cancellationToken);
+
+        if (appointment.CreatedAt >= DateTime.UtcNow.AddHours(-1))
+        {
+            _logger.LogInformation("The appointment was created more than one hour ago. Confirming appointment automatically.");
+            
+            await _repository.ConfirmAppointmentAutomaticallyAsync(appointment, cancellationToken);
+        }
         
         _logger.LogInformation("Appointment with AppointmentId: {AppointmentId} has been successfully confirmed automatically.", appointmentId);
         
@@ -285,8 +294,14 @@ public class AppointmentService : IAppointmentService
         
         appointment.CancellationReason = cancellationReason;
         appointment.UpdateAt = DateTime.UtcNow;
-        
-        await _repository.CancelAppointmentAsync(appointment, cancellationToken);
+
+        if (appointment.CreatedAt <= DateTime.UtcNow.AddHours(-1))
+        {
+            _logger.LogInformation("Appointment with AppointmentId: {AppointmentId} was created more than one hour ago. Cancelling the appointment without penalty.", 
+                appointmentId);
+            
+            await _repository.CancelAppointmentAsync(appointment, cancellationToken);
+        }
         
         _logger.LogInformation("Successfully canceled appointment with AppointmentId: {AppointmentId}.", appointmentId);
         
@@ -295,8 +310,8 @@ public class AppointmentService : IAppointmentService
     
     public async Task<ResultT<int>> GetTotalAppointmentsCountAsync(Guid serviceId, CancellationToken cancellationToken)
     {
-        var appointment = await _repository.GetByIdAsync(serviceId, cancellationToken);
-        if (appointment == null)
+        var services = await _serviceRepository.GetByIdAsync(serviceId, cancellationToken); 
+        if (services == null)
         {
             _logger.LogError("Service with ServiceId: {ServiceId} not found.", serviceId);
             
@@ -327,12 +342,19 @@ public class AppointmentService : IAppointmentService
 
             return ResultT<string>.Failure(Error.Failure("400", "Penalization percentage cannot be less than zero."));
         }
-        
-        await _repository.CancelAppointmentWithPenaltyAsync(appointment, penalizationPorcentage, cancellationToken);
+
+        if (appointment.CreatedAt >= DateTime.UtcNow.AddHours(-1))
+        {
+            _logger.LogInformation("The appointment with AppointmentId: {AppointmentId} was created within the last hour. Cancelling the appointment with a penalty of {PenalizationPercentage}%.", appointmentId, penalizationPorcentage);
+
+            await _repository.CancelAppointmentWithPenaltyAsync(appointment, penalizationPorcentage, cancellationToken);
+
+            return ResultT<string>.Success("Appointment successfully cancelled with penalty.");
+        }
         
         _logger.LogInformation("Appointment with AppointmentId: {AppointmentId} has been cancelled with a penalty of {PenalizationPercentage}%.", appointmentId, penalizationPorcentage);
 
-        return ResultT<string>.Success("Appointment successfully cancelled with penalty.");
+        return ResultT<string>.Success($"Appointment successfully cancelled with a penalty of {penalizationPorcentage}%."); 
     }
     
     public async Task<ResultT<ConfirmAppointmentDTos>> ConfirmAppointment(Guid appointmentId, string confirmationCode, CancellationToken cancellationToken)

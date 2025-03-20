@@ -8,8 +8,6 @@ namespace Trimly.Core.Application.Interfaces.Service
         UpdateServiceDTos,
         ServicesDTos>
     {
-        Task<ResultT<Guid>> ApplyDiscountCodeAsync(Guid serviceId,Guid registeredCompanyId, string discountCode, CancellationToken cancellationToken);
-
         Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesWithDurationLessThan30MinutesAsync(Guid registeredCompany, CancellationToken cancellationToken);
 
         Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByCompanyIdAsync(Guid registeredCompaniesId, CancellationToken cancellationToken);
@@ -17,5 +15,6 @@ namespace Trimly.Core.Application.Interfaces.Service
         Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByNameAsync(string name, Guid registeredCompanyId, CancellationToken cancellationToken);
 
         Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByPriceAsync(decimal price, Guid registeredCompanyId, CancellationToken cancellationToken);
+
     }
 }

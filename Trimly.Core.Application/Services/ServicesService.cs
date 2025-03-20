@@ -190,7 +190,7 @@ public class ServicesService : IServicesService
         var service = await _repository.GetByIdAsync(id, cancellation);
         if (service == null)
         {
-            _logger.LogError("");
+            _logger.LogError("Service with ID {ServiceId} not found.", id);
             
             return ResultT<Guid>.Failure(Error.NotFound("404", $"{id} Service not found."));
         }
@@ -198,41 +198,6 @@ public class ServicesService : IServicesService
         await _repository.DeleteAsync(service, cancellation);
         
         _logger.LogInformation("Service with ID {ServiceId} deleted successfully.", id);
-        
-        return ResultT<Guid>.Success(service.ServicesId ?? Guid.Empty);
-    }
-
-    // string return
-    public async Task<ResultT<Guid>> ApplyDiscountCodeAsync(Guid serviceId, Guid registeredCompanyId, string discountCode, CancellationToken cancellationToken)
-    {
-
-        var service = await _repository.GetByIdAsync(serviceId, cancellationToken);
-        if (service == null)
-        {
-            _logger.LogError("Service with ID {ServiceId} not found.", serviceId);
-            
-            return ResultT<Guid>.Failure(Error.NotFound("404", $"{serviceId} Service not found."));
-        }
-        
-        var company = await _registeredCompanyRepository.GetByIdAsync(registeredCompanyId, cancellationToken);
-        if (company == null)
-        {
-            _logger.LogError("Company with ID {CompanyId} not found.", registeredCompanyId);
-            
-            return ResultT<Guid>.Failure(Error.NotFound("404", $"{registeredCompanyId} not found."));
-        }
-
-        if (string.IsNullOrWhiteSpace(discountCode))
-        {
-            _logger.LogError("Invalid discount code provided. Discount code cannot be null or empty.");
-            
-            return ResultT<Guid>.Failure(Error.Failure("400", $"The discount code {discountCode} is invalid."));
-        } 
-        
-        await _repository.ApplyDiscountCodeAsync(service, registeredCompanyId, discountCode, cancellationToken);
-        
-        _logger.LogInformation("Successfully applied discount code {DiscountCode} to service ID {ServiceId} for company ID {CompanyId}.", 
-            discountCode, serviceId, registeredCompanyId);
         
         return ResultT<Guid>.Success(service.ServicesId ?? Guid.Empty);
     }
@@ -378,4 +343,5 @@ public class ServicesService : IServicesService
 
         return ResultT<IEnumerable<ServiceFilterDTos>>.Success(serviceFilterDTos);
     }
+    
 }

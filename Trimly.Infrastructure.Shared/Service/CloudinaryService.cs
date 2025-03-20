@@ -6,14 +6,9 @@ using Trimly.Core.Domain.Settings;
 
 namespace Trimly.Infrastructure.Shared.Service
 {
-    public class CloudinaryService : ICloudinaryService
+    public class CloudinaryService(IOptions<CloudinarySettings> cloudinarySettings) : ICloudinaryService
     {
-        private CloudinarySettings _cloudinarySettings { get; }
-
-        public CloudinaryService(IOptions<CloudinarySettings> cloudinarySettings)
-        {
-            _cloudinarySettings = cloudinarySettings.Value;
-        }
+        private CloudinarySettings _cloudinarySettings { get; } = cloudinarySettings.Value;
 
         public async Task<string> UploadImageCloudinaryAsync(Stream fileStream, string imageName, CancellationToken cancellationToken)
         {

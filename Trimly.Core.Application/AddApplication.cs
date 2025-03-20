@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Trimly.Core.Application.Interfaces.Service;
 using Trimly.Core.Application.Services;
+using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application
 {
