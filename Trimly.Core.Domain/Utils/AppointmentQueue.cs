@@ -1,26 +1,16 @@
-using System.Collections.Concurrent;
-
 namespace Trimly.Core.Domain.Utils;
 
-public class AppointmentQueue
+public static class AppointmentQueue
 {
-    private readonly ConcurrentQueue<Guid> _queue = new();
-    private readonly SemaphoreSlim _signal = new(0);
+    private static readonly Queue<Guid> IdAppointment = new();
+    public static Queue<Guid> Appointment => IdAppointment;
 
-    public void Enqueue(Guid appointmentId)
+    public static void Add(Guid appointment)
     {
-        _queue.Enqueue(appointmentId);
-        _signal.Release(); // Notify that there is a new ID in the queue
+        IdAppointment.Enqueue(appointment);         
     }
-    
-    public async Task<Guid?> DequeueAsync(CancellationToken cancellationToken)
+    public static Guid Dequeue()
     {
-        await _signal.WaitAsync(cancellationToken);
-
-        if (_queue.TryDequeue(out var appointmentId))
-        {
-            return appointmentId;
-        }
-        return null;
+       return IdAppointment.Dequeue();
     }
 }
