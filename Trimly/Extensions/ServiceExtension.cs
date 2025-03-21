@@ -1,12 +1,18 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using Trimly.Core.Application.DTOs.Account;
+using Trimly.Core.Application.DTOs.Account.Authenticate;
+using Trimly.Core.Application.DTOs.Account.Password;
+using Trimly.Core.Application.DTOs.Account.Register;
 using Trimly.Core.Application.DTOs.Appointment;
 using Trimly.Core.Application.DTOs.RegisteredCompanies;
 using Trimly.Core.Application.DTOs.Review;
 using Trimly.Core.Application.DTOs.Schedules;
 using Trimly.Core.Application.DTOs.Service;
 using Trimly.Presentation.ExceptionHandling;
+using Trimly.Presentation.Validations.Account;
 using Trimly.Presentation.Validations.Appointment;
 using Trimly.Presentation.Validations.RegisteredCompanies;
 using Trimly.Presentation.Validations.Review;
@@ -48,6 +54,11 @@ public static class ServiceExtension
         services.AddScoped<IValidator<ReviewsUpdateDTos>, UpdateReview>();
         services.AddScoped<IValidator<CreateSchedulesDTos>, CreateSchedules>();
         services.AddScoped<IValidator<UpdateSchedulesDTos>, UpdateSchedules>();
+        services.AddScoped<IValidator<AuthenticateRequest>, AuthenticateAccount>();
+        services.AddScoped<IValidator<ForgotRequest>, ForgotPasswordAccount>();
+        services.AddScoped<IValidator<RegisterRequest>, RegisterAccount>();
+        services.AddScoped<IValidator<ResetPasswordRequest>,ResetPasswordAccount>();
+        services.AddScoped<IValidator<UpdateAccountDto>, UpdateAccount>();
     }
     
     public static void AddException(this IServiceCollection services)
@@ -66,4 +77,37 @@ public static class ServiceExtension
             options.ReportApiVersions = true;
         });
     }
+
+    public static void AddRateLimiting(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode= StatusCodes.Status429TooManyRequests;
+            options.OnRejected = async (context, toke) =>
+            {
+                await context.HttpContext.Response.WriteAsync("Request limit exceeded. Please try again later", cancellationToken: toke);
+            };
+
+            options.AddFixedWindowLimiter("fixed", limiterOptions =>
+            {
+                limiterOptions.Window = TimeSpan.FromSeconds(10);
+                limiterOptions.PermitLimit = 5;
+            });
+
+            options.AddSlidingWindowLimiter("sliding", limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 5;
+                limiterOptions.SegmentsPerWindow = 5;
+                limiterOptions.Window = TimeSpan.FromMinutes(4);
+            });
+
+            options.AddTokenBucketLimiter("tokenBucketPolicy", limiterOptions =>
+            {
+                limiterOptions.TokenLimit = 10; // 10 tokens maximum
+                limiterOptions.TokensPerPeriod = 2;         // 2 tokens are recharged
+                limiterOptions.ReplenishmentPeriod = TimeSpan.FromSeconds(5); // Every 5 seconds
+            });
+        });
+    }
+    
 }
