@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Trimly.Core.Application.DTOs.Appointment;
 using Trimly.Core.Application.Interfaces.Service;
 using Trimly.Core.Domain.Enum;
@@ -18,6 +20,8 @@ public class AppointmentController(
 {
 
     [HttpGet("pagination")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetPagedResulAsync(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
@@ -31,6 +35,8 @@ public class AppointmentController(
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await service.GetByIdAsync(id, cancellationToken);
@@ -41,6 +47,8 @@ public class AppointmentController(
     }
 
     [HttpPost]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> CreateAsync([FromBody] CreateAppointmentDTos createAppointmentDTos,CancellationToken cancellationToken)
     {
         var resultValidation = await validatorCreate.ValidateAsync(createAppointmentDTos,cancellationToken);
@@ -55,6 +63,8 @@ public class AppointmentController(
     }
 
     [HttpPut("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateAppoinmentDTos updateAppointmentDTos,CancellationToken cancellationToken)
     {
         var resultValidation = await validatorUpdate.ValidateAsync(updateAppointmentDTos,cancellationToken);
@@ -69,6 +79,8 @@ public class AppointmentController(
     }
 
     [HttpDelete("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
@@ -79,6 +91,8 @@ public class AppointmentController(
     }
 
     [HttpGet("search/status/{status}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetAppointmentStatusAsync([FromRoute] AppointmentStatus status,
         CancellationToken cancellationToken)
     {
@@ -90,6 +104,8 @@ public class AppointmentController(
     }
 
     [HttpGet("cancel-appointment/{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner,Client")]
     public async Task<IActionResult> CancelAppointmentAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await service.CancelAppointmentAsync(id, cancellationToken);
@@ -100,6 +116,8 @@ public class AppointmentController(
     }
 
     [HttpPut("reschedule/{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner,Client")]
     public async Task<IActionResult> ReschedulesAppointmentAsync(
         [FromRoute] Guid id,
         [FromBody] RescheduleAppointmentDTos rescheduleAppointmentDTos,
@@ -120,6 +138,8 @@ public class AppointmentController(
     }
     
     [HttpPost("{id}/cancel-without-penalty")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner,Client")]
     public async Task<IActionResult> CancelAppointmentWithoutPenaltyAsync(
         [FromRoute] Guid id,
         [FromBody] CancelAppointmentRequest request,
@@ -133,6 +153,8 @@ public class AppointmentController(
     }
     
     [HttpGet("count-by-service/{serviceId}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetTotalAppointmentAsync([FromRoute] Guid serviceId, CancellationToken cancellationToken)
     {
         var result = await service.GetTotalAppointmentsCountAsync(serviceId, cancellationToken);
@@ -142,8 +164,10 @@ public class AppointmentController(
         return NotFound(result.Error);
     }
     
-    // Prob
+    
     [HttpGet("{appointmentId}/confirmation-code/{code}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> ConfirmAppointmentCodeAsync(
         [FromRoute] Guid appointmentId,
         [FromRoute] string code,
