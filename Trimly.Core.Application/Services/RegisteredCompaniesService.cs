@@ -227,49 +227,47 @@ public class RegisteredCompaniesService : IRegisteredCompaniesService
         return ResultT<Guid>.Success(registeredCompany.RegisteredCompaniesId ?? Guid.Empty);
     }
 
-    public async Task<ResultT<IEnumerable<OrderNameComapanyDTos>>> FilterByNameAsync(string name, CancellationToken cancellationToken)
+    public async Task<ResultT<RegisteredCompaniesDTos>> FilterByNameAsync(string name, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            _logger.LogError("Validation failed: The 'name' parameter is missing or empty.");
-    
-            return ResultT<IEnumerable<OrderNameComapanyDTos>>.Failure(
-                Error.Failure("400", "The 'name' field is required and cannot be empty.")
-            );
+            _logger.LogError("Validation failed: The 'name' parameter is required but was not provided or is empty.");
+            return ResultT<RegisteredCompaniesDTos>.Failure(Error.Failure("400", "The company name cannot be empty."));
         }
 
         var exists = await _registeredCompanyRepository.ValidateAsync(x => x.Name == name);
         if (!exists)
         {
-            _logger.LogError("Validation failed: The company '{name}' is not registered.",name);
+            _logger.LogWarning("Company search failed: No registered company found with the name '{name}'.", name);
+            return ResultT<RegisteredCompaniesDTos>.Failure(Error.NotFound("404", $"No company registered under the name '{name}'."));
+        }
+
+        var filterByName = await _registeredCompanyRepository.FilterByNameAsync(name, cancellationToken);
+        if (filterByName == null)         
+        {             
+            _logger.LogWarning("Company search failed: No registered company found with the name '{CompanyName}'.", name);              
     
-            return ResultT<IEnumerable<OrderNameComapanyDTos>>.Failure(
-                Error.Failure("404", $"The company '{name}' is not registered.")
-            );
-        }
-
-        var filterByName = await _registeredCompanyRepository.OrderByNameAsync(cancellationToken);
-        if (filterByName == null || !filterByName.Any())
-        {
-            _logger.LogWarning("No registered companies found."); 
-
-            return ResultT<IEnumerable<OrderNameComapanyDTos>>.Failure(
-                Error.Failure("404", "No registered companies found.")
-            );
-        }
+            return ResultT<RegisteredCompaniesDTos>.Failure(Error.Failure("400", $"No company found with the name '{name}'."));
+        }  
         
-        IEnumerable<OrderNameComapanyDTos> comapanyDTos =
-            filterByName.Select(x => new OrderNameComapanyDTos
+        RegisteredCompaniesDTos registeredCompaniesDTos = new
         (
-            NameRegistedCompanyDTos: x.Name
-        ));
-        
-        _logger.LogInformation("Successfully retrieved {Count} registered companies matching the name '{CompanyName}'.", 
-            comapanyDTos.Count(), name);
-        
-        return ResultT<IEnumerable<OrderNameComapanyDTos>>.Success(comapanyDTos);
-    }
+            RegisteredCompaniesId: filterByName.RegisteredCompaniesId,
+            Name: filterByName.Name,
+            PhoneNumber: filterByName.Phone,
+            AddresCompanies: filterByName.Address,
+            DescriptionCompanies: filterByName.Description,
+            LogoUrl: filterByName.LogoUrl,
+            Status: filterByName.Status,
+            RegistrationDateCompany: filterByName.RegistrationDate
+        );
 
+        _logger.LogInformation("Company search successful: Found registered company '{name}' with ID {id}.", 
+            filterByName.Name, filterByName.RegisteredCompaniesId);
+
+        return ResultT<RegisteredCompaniesDTos>.Success(registeredCompaniesDTos);
+    }
+    
     public async Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> FilterByStatusAsync(Status status, CancellationToken cancellationToken)
     {
         var exists = await _registeredCompanyRepository.ValidateAsync(x => x.Status == status);

@@ -9,7 +9,7 @@ namespace Trimly.Core.Application.Interfaces.Service
         RegisteredCompaniesUpdateDTos,
         RegisteredCompaniesDTos>
     {
-        Task<ResultT<IEnumerable<OrderNameComapanyDTos>>> FilterByNameAsync(string name, CancellationToken cancellationToken);
+        Task<ResultT<RegisteredCompaniesDTos>> FilterByNameAsync(string name, CancellationToken cancellationToken);
 
         Task<ResultT<IEnumerable<RegisteredCompaniesDTos>>> FilterByStatusAsync(Status status, CancellationToken cancellationToken);
 
