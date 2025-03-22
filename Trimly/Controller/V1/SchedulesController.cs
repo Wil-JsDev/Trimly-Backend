@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Trimly.Core.Application.DTOs.Schedules;
 using Trimly.Core.Application.Interfaces.Service;
 using Trimly.Core.Domain.Enum;
@@ -17,6 +19,8 @@ public class SchedulesController(
 {
 
     [HttpGet("pagination")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetPagedResult(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
@@ -30,6 +34,8 @@ public class SchedulesController(
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await schedulesService.GetByIdAsync(id, cancellationToken);
@@ -40,6 +46,8 @@ public class SchedulesController(
     }
 
     [HttpPost]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> CreateAsync([FromBody] CreateSchedulesDTos createSchedulesDTos, CancellationToken cancellationToken)
     {
         var resultValidation = await validatorCreate.ValidateAsync(createSchedulesDTos, cancellationToken);
@@ -54,6 +62,8 @@ public class SchedulesController(
     }
 
     [HttpPut("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] Guid id, 
         [FromBody] UpdateSchedulesDTos updateSchedulesDTos, 
@@ -71,6 +81,8 @@ public class SchedulesController(
     }
 
     [HttpDelete("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await schedulesService.DeleteAsync(id, cancellationToken);
@@ -81,6 +93,8 @@ public class SchedulesController(
     }
 
     [HttpPut("company/{registeredCompanyId}/holiday")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> ActivatedHolidayAsync([FromRoute] Guid registeredCompanyId,
         CancellationToken cancellationToken)
     {
@@ -92,6 +106,8 @@ public class SchedulesController(
     }
 
     [HttpGet("company/{registeredCompanyId}/search/opening-time/{openingTime}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetSchedulesByOpeningTimeAsync(
         [FromRoute] Guid registeredCompanyId,
         [FromRoute] TimeOnly openingTime,
@@ -105,6 +121,8 @@ public class SchedulesController(
     }
 
     [HttpGet("company/{registeredCompanyId}/search/holiday-status/{isHoliday}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetSchedulesByHolidayStatus(
         [FromRoute] Guid registeredCompanyId,
         [FromRoute] Status isHoliday,
@@ -118,6 +136,8 @@ public class SchedulesController(
     }
 
     [HttpGet("company/{registeredCompanyId}/search/weekday/{weekday}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetSchedulesWeekdayAsync(
         [FromRoute] Guid registeredCompanyId,
         [FromRoute] Weekday weekday,

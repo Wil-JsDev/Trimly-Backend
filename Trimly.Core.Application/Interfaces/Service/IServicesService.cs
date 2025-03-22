@@ -15,6 +15,8 @@ namespace Trimly.Core.Application.Interfaces.Service
         Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByNameAsync(string name, Guid registeredCompanyId, CancellationToken cancellationToken);
 
         Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByPriceAsync(decimal price, Guid registeredCompanyId, CancellationToken cancellationToken);
+        
+        Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByDurationMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken);
 
     }
 }

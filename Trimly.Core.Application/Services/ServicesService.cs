@@ -8,31 +8,26 @@ using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application.Services;
 
-public class ServicesService : IServicesService
+public class ServicesService(
+    IServiceRepository repository,
+    ILogger<ServicesService> logger,
+    ICloudinaryService cloudinaryService,
+    IRegisteredCompanyRepository registeredCompanyRepository)
+    : IServicesService
 {
-    private readonly IServiceRepository _repository;
-    private readonly ILogger<ServicesService> _logger;
-    private readonly ICloudinaryService _cloudinaryService;
-    private readonly IRegisteredCompanyRepository _registeredCompanyRepository;
-    
-    public ServicesService(IServiceRepository repository, ILogger<ServicesService> logger, ICloudinaryService cloudinaryService, IRegisteredCompanyRepository registeredCompanyRepository)
-    {
-        _repository = repository;
-        _logger = logger;
-        _cloudinaryService = cloudinaryService;
-        _registeredCompanyRepository = registeredCompanyRepository;
-    }
-    
-    public async Task<ResultT<PagedResult<ServicesDTos>>> GetPagedResult(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<ResultT<PagedResult<ServicesDTos>>> GetPagedResult(int pageNumber, int pageSize,
+        CancellationToken cancellationToken)
     {
         if (pageNumber <= 0 || pageSize <= 0)
         {
-            _logger.LogError("Invalid pagination parameters. PageNumber: {PageNumber}, PageSize: {PageSize}.", pageNumber, pageSize);
-        
-            return ResultT<PagedResult<ServicesDTos>>.Failure(Error.Failure("400", "Page number and page size must be greater than zero."));
+            logger.LogError("Invalid pagination parameters. PageNumber: {PageNumber}, PageSize: {PageSize}.",
+                pageNumber, pageSize);
+
+            return ResultT<PagedResult<ServicesDTos>>.Failure(Error.Failure("400",
+                "Page number and page size must be greater than zero."));
         }
-        
-        var servicesNumber = await _repository.GetPagedResultAsync(pageNumber, pageSize, cancellationToken);
+
+        var servicesNumber = await repository.GetPagedResultAsync(pageNumber, pageSize, cancellationToken);
         IEnumerable<ServicesDTos> servicesDTos = servicesNumber.Items.Select(x => new ServicesDTos
         (
             ServiceId: x.ServicesId,
@@ -47,12 +42,14 @@ public class ServicesService : IServicesService
             UpdateAt: x.UpdateAt
         ));
 
-        if ( servicesDTos == null || !servicesDTos.Any())
+        if (servicesDTos == null || !servicesDTos.Any())
         {
-            _logger.LogError("No services found for the given pagination parameters. PageNumber: {PageNumber}, PageSize: {PageSize}.", 
+            logger.LogError(
+                "No services found for the given pagination parameters. PageNumber: {PageNumber}, PageSize: {PageSize}.",
                 pageNumber, pageSize);
-        
-            return ResultT<PagedResult<ServicesDTos>>.Failure(Error.Failure("400", "No services available for the requested page."));
+
+            return ResultT<PagedResult<ServicesDTos>>.Failure(Error.Failure("400",
+                "No services available for the requested page."));
         }
 
         PagedResult<ServicesDTos> pagedResult = new()
@@ -63,19 +60,19 @@ public class ServicesService : IServicesService
             Items = servicesDTos
         };
 
-        _logger.LogInformation("Successfully retrieved {TotalItems} services. Page {CurrentPage} of {TotalPages}.", 
+        logger.LogInformation("Successfully retrieved {TotalItems} services. Page {CurrentPage} of {TotalPages}.",
             servicesNumber.TotalItems, servicesNumber.CurrentPage, servicesNumber.TotalPages);
-        
+
         return ResultT<PagedResult<ServicesDTos>>.Success(pagedResult);
     }
 
     public async Task<ResultT<ServicesDTos>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var service = await _repository.GetByIdAsync(id, cancellationToken);
+        var service = await repository.GetByIdAsync(id, cancellationToken);
         if (service == null)
         {
-            _logger.LogError("{id} not found in services",id);
-            
+            logger.LogError("{id} not found in services", id);
+
             return ResultT<ServicesDTos>.Failure(Error.Failure("404", $"{id} Service not found."));
         }
 
@@ -92,31 +89,32 @@ public class ServicesService : IServicesService
             CreatedAt: service.CreatedAt,
             UpdateAt: service.UpdateAt
         );
-        
-        _logger.LogInformation("Successfully retrieved {ServiceId} service.", service.ServicesId);
-        
+
+        logger.LogInformation("Successfully retrieved {ServiceId} service.", service.ServicesId);
+
         return ResultT<ServicesDTos>.Success(servicesDTos);
     }
 
-    public async Task<ResultT<ServicesDTos>> CreateAsync(CreateServiceDTos createAppointmentDTos, CancellationToken cancellationToken)
+    public async Task<ResultT<ServicesDTos>> CreateAsync(CreateServiceDTos createAppointmentDTos,
+        CancellationToken cancellationToken)
     {
         if (createAppointmentDTos == null)
         {
-            _logger.LogError("Failed to create service. The request body is null.");
-        
+            logger.LogError("Failed to create service. The request body is null.");
+
             return ResultT<ServicesDTos>.Failure(Error.Failure("400", "Invalid request. Service data is required."));
         }
-        
+
         string? logoUrl = null;
         if (createAppointmentDTos.ImageFile != null)
         {
             using var stream = createAppointmentDTos.ImageFile.OpenReadStream();
-            logoUrl = await _cloudinaryService.UploadImageCloudinaryAsync(
+            logoUrl = await cloudinaryService.UploadImageCloudinaryAsync(
                 stream,
                 createAppointmentDTos.ImageFile.FileName,
                 cancellationToken);
         }
-        
+
         Domain.Models.Services service = new()
         {
             ServicesId = Guid.NewGuid(),
@@ -129,7 +127,7 @@ public class ServicesService : IServicesService
             RegisteredCompanyId = createAppointmentDTos.RegisteredCompanyId,
         };
 
-        await _repository.AddAsync(service, cancellationToken);
+        await repository.AddAsync(service, cancellationToken);
 
         ServicesDTos servicesDTos = new
         (
@@ -144,28 +142,29 @@ public class ServicesService : IServicesService
             CreatedAt: service.CreatedAt,
             UpdateAt: service.UpdateAt
         );
-        _logger.LogInformation("Service created successfully with ID: {ServiceId}.", service.ServicesId);
-    
+        logger.LogInformation("Service created successfully with ID: {ServiceId}.", service.ServicesId);
+
         return ResultT<ServicesDTos>.Success(servicesDTos);
     }
 
-    public async Task<ResultT<ServicesDTos>> UpdateAsync(Guid id, UpdateServiceDTos entity, CancellationToken cancellation)
+    public async Task<ResultT<ServicesDTos>> UpdateAsync(Guid id, UpdateServiceDTos entity,
+        CancellationToken cancellation)
     {
-        var service = await _repository.GetByIdAsync(id, cancellation);
+        var service = await repository.GetByIdAsync(id, cancellation);
         if (service == null)
         {
-            _logger.LogError("Service update failed. Service with ID {ServiceId} not found.", id);
-        
+            logger.LogError("Service update failed. Service with ID {ServiceId} not found.", id);
+
             return ResultT<ServicesDTos>.Failure(Error.NotFound("404", $"{id} Service not found."));
         }
-        
+
         service.Name = entity.Name;
         service.Price = entity.Price;
         service.Description = entity.Description;
         service.DurationInMinutes = entity.DurationInMinutes;
         service.UpdateAt = DateTime.UtcNow;
-        
-        await _repository.UpdateAsync(service, cancellation);
+
+        await repository.UpdateAsync(service, cancellation);
         ServicesDTos servicesDTos = new
         (
             ServiceId: service.ServicesId,
@@ -179,82 +178,91 @@ public class ServicesService : IServicesService
             CreatedAt: service.CreatedAt,
             UpdateAt: service.UpdateAt
         );
-        
-        _logger.LogInformation("Service with ID {ServiceId} updated successfully.", id);
-        
+
+        logger.LogInformation("Service with ID {ServiceId} updated successfully.", id);
+
         return ResultT<ServicesDTos>.Success(servicesDTos);
     }
 
     public async Task<ResultT<Guid>> DeleteAsync(Guid id, CancellationToken cancellation)
     {
-        var service = await _repository.GetByIdAsync(id, cancellation);
+        var service = await repository.GetByIdAsync(id, cancellation);
         if (service == null)
         {
-            _logger.LogError("Service with ID {ServiceId} not found.", id);
-            
+            logger.LogError("Service with ID {ServiceId} not found.", id);
+
             return ResultT<Guid>.Failure(Error.NotFound("404", $"{id} Service not found."));
         }
-        
-        await _repository.DeleteAsync(service, cancellation);
-        
-        _logger.LogInformation("Service with ID {ServiceId} deleted successfully.", id);
-        
+
+        await repository.DeleteAsync(service, cancellation);
+
+        logger.LogInformation("Service with ID {ServiceId} deleted successfully.", id);
+
         return ResultT<Guid>.Success(service.ServicesId ?? Guid.Empty);
     }
 
-    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesWithDurationLessThan30MinutesAsync(Guid registeredCompany, CancellationToken cancellationToken)
+    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesWithDurationLessThan30MinutesAsync(
+        Guid registeredCompany, CancellationToken cancellationToken)
     {
-        var company = await _registeredCompanyRepository.GetByIdAsync(registeredCompany, cancellationToken);
+        var company = await registeredCompanyRepository.GetByIdAsync(registeredCompany, cancellationToken);
         if (company == null)
         {
-            _logger.LogError("Company with ID {CompanyId} not found.", registeredCompany);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.NotFound("404", $"Company with ID {registeredCompany} not found."));
+            logger.LogError("Company with ID {CompanyId} not found.", registeredCompany);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.NotFound("404",
+                $"Company with ID {registeredCompany} not found."));
         }
-        
-        var services = await _repository.GetServicesWithDurationLessThan30MinutesAsync(registeredCompany, cancellationToken);
+
+        var services =
+            await repository.GetServicesWithDurationLessThan30MinutesAsync(registeredCompany, cancellationToken);
         if (!services.Any())
         {
-            _logger.LogWarning("No services found for company ID {CompanyId} with duration less than 30 minutes.", registeredCompany);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "No services available with duration less than 30 minutes."));
+            logger.LogWarning("No services found for company ID {CompanyId} with duration less than 30 minutes.",
+                registeredCompany);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400",
+                "No services available with duration less than 30 minutes."));
         }
-        
+
         IEnumerable<ServiceFilterDTos> serviceFilterDTos = services.Select(x => new ServiceFilterDTos
         (
             Name: x.Name,
-            Price:x.Price,
+            Price: x.Price,
             Description: x.Description,
             DurationInMinutes: x.DurationInMinutes,
             ImageUrl: x.ImageUrl
         ));
-        
-        _logger.LogInformation("Retrieved {ServiceCount} services with duration less than 30 minutes for company ID {CompanyId}.", 
+
+        logger.LogInformation(
+            "Retrieved {ServiceCount} services with duration less than 30 minutes for company ID {CompanyId}.",
             serviceFilterDTos.Count(), registeredCompany);
-        
+
         return ResultT<IEnumerable<ServiceFilterDTos>>.Success(serviceFilterDTos);
     }
 
-    public async Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByCompanyIdAsync(Guid registeredCompaniesId, CancellationToken cancellationToken)
+    public async Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByCompanyIdAsync(Guid registeredCompaniesId,
+        CancellationToken cancellationToken)
     {
-        var company = await _registeredCompanyRepository.GetByIdAsync(registeredCompaniesId, cancellationToken);
+        var company = await registeredCompanyRepository.GetByIdAsync(registeredCompaniesId, cancellationToken);
         if (company == null)
         {
-            _logger.LogError("Company with ID {CompanyId} not found.", registeredCompaniesId);
-            
-            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.NotFound("404", $"Company with ID {registeredCompaniesId} not found."));
+            logger.LogError("Company with ID {CompanyId} not found.", registeredCompaniesId);
+
+            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.NotFound("404",
+                $"Company with ID {registeredCompaniesId} not found."));
         }
 
         var servicesByRegisteredCompanies =
-            await _repository.GetServicesByCompanyIdAsync(registeredCompaniesId, cancellationToken);
-        
+            await repository.GetServicesByCompanyIdAsync(registeredCompaniesId, cancellationToken);
+
         if (servicesByRegisteredCompanies == null || !servicesByRegisteredCompanies.Any())
         {
-            _logger.LogError("No services found for company ID {CompanyId}.", registeredCompaniesId);
-            
-            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.Failure("400", "No services found for company ID."));
+            logger.LogError("No services found for company ID {CompanyId}.", registeredCompaniesId);
+
+            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.Failure("400",
+                "No services found for company ID."));
         }
-        
+
         IEnumerable<ServicesDTos> servicesDTos = servicesByRegisteredCompanies.Select(x => new ServicesDTos
         (
             ServiceId: x.ServicesId,
@@ -268,35 +276,41 @@ public class ServicesService : IServicesService
             CreatedAt: x.CreatedAt,
             UpdateAt: x.UpdateAt
         ));
-        
-        _logger.LogInformation("Retrieved {Count} services for company ID {CompanyId}.", servicesDTos.Count(), registeredCompaniesId);
+
+        logger.LogInformation("Retrieved {Count} services for company ID {CompanyId}.", servicesDTos.Count(),
+            registeredCompaniesId);
 
         return ResultT<IEnumerable<ServicesDTos>>.Success(servicesDTos);
     }
 
-    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByNameAsync(string name, Guid registeredCompanyId, CancellationToken cancellationToken)
+    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByNameAsync(string name,
+        Guid registeredCompanyId, CancellationToken cancellationToken)
     {
         if (String.IsNullOrWhiteSpace(name))
         {
-            _logger.LogError("Service search failed. The provided service name is null or empty.");
-            
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "Service name cannot be empty."));
-        }
-        
-        var exists = await _repository.ValidateAsync(x => x.Name == name);
-        if (!exists)
-        {
-            _logger.LogError("Service search failed. No service found with the name '{ServiceName}'.", name);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "No service found with the given name."));
+            logger.LogError("Service search failed. The provided service name is null or empty.");
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(
+                Error.Failure("400", "Service name cannot be empty."));
         }
 
-        var servicesByName = await _repository.GetServicesByNameAsync(registeredCompanyId,name, cancellationToken);
+        var exists = await repository.ValidateAsync(x => x.Name == name);
+        if (!exists)
+        {
+            logger.LogError("Service search failed. No service found with the name '{ServiceName}'.", name);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400",
+                "No service found with the given name."));
+        }
+
+        var servicesByName = await repository.GetServicesByNameAsync(registeredCompanyId, name, cancellationToken);
         if (!servicesByName.Any())
         {
-            _logger.LogError("No services found for the company with ID {CompanyId} and service name '{ServiceName}'.", registeredCompanyId, name);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "The service name is invalid."));
+            logger.LogError("No services found for the company with ID {CompanyId} and service name '{ServiceName}'.",
+                registeredCompanyId, name);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400",
+                "The service name is invalid."));
         }
 
         var servicesList = servicesByName.Select(x => new ServiceFilterDTos
@@ -307,30 +321,37 @@ public class ServicesService : IServicesService
             DurationInMinutes: x.DurationInMinutes,
             ImageUrl: x.ImageUrl
         ));
-        
-        _logger.LogInformation("Successfully retrieved {ServiceCount} services for the company with ID {CompanyId} and service name '{ServiceName}'.", 
+
+        logger.LogInformation(
+            "Successfully retrieved {ServiceCount} services for the company with ID {CompanyId} and service name '{ServiceName}'.",
             servicesList.Count(), registeredCompanyId, name);
 
         return ResultT<IEnumerable<ServiceFilterDTos>>.Success(servicesList);
     }
 
-    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByPriceAsync(decimal price, Guid registeredCompanyId, CancellationToken cancellationToken)
+    public async Task<ResultT<IEnumerable<ServiceFilterDTos>>> GetServicesByPriceAsync(decimal price,
+        Guid registeredCompanyId, CancellationToken cancellationToken)
     {
         if (price <= 0)
         {
-            _logger.LogError("Service search failed. The provided price '{Price}' is invalid.", price);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "Price must be greater than zero."));
+            logger.LogError("Service search failed. The provided price '{Price}' is invalid.", price);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400",
+                "Price must be greater than zero."));
         }
-        
-        var serviceByPrice = await _repository.GetServicesByPriceAsync(registeredCompanyId, price, cancellationToken);
-        if (!serviceByPrice.Any())
+
+        var serviceByPrice = await repository.GetServicesByPriceAsync(registeredCompanyId, price, cancellationToken);
+        IEnumerable<Domain.Models.Services> servicesEnumerable = serviceByPrice.ToList();
+        if (!servicesEnumerable.Any())
         {
-            _logger.LogError("No services found for the company with ID {CompanyId} at price {Price}.", registeredCompanyId, price);
-        
-            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400", "No services found at the specified price."));
+            logger.LogError("No services found for the company with ID {CompanyId} at price {Price}.",
+                registeredCompanyId, price);
+
+            return ResultT<IEnumerable<ServiceFilterDTos>>.Failure(Error.Failure("400",
+                "No services found at the specified price."));
         }
-        IEnumerable<ServiceFilterDTos> serviceFilterDTos = serviceByPrice.Select(x => new ServiceFilterDTos
+
+        IEnumerable<ServiceFilterDTos> serviceFilterDTos = servicesEnumerable.Select(x => new ServiceFilterDTos
         (
             Name: x.Name,
             Price: x.Price,
@@ -338,10 +359,58 @@ public class ServicesService : IServicesService
             DurationInMinutes: x.DurationInMinutes,
             ImageUrl: x.ImageUrl
         ));
-        _logger.LogInformation("Successfully retrieved {ServiceCount} services for the company with ID {CompanyId} at price {Price}.", 
-            serviceFilterDTos.Count(), registeredCompanyId, price);
+        IEnumerable<ServiceFilterDTos> serviceFilterDTosEnumerable = serviceFilterDTos.ToList();
+        logger.LogInformation("Successfully retrieved {ServiceCount} services for the company with ID {CompanyId} at price {Price}.",
+            serviceFilterDTosEnumerable.Count(), registeredCompanyId, price);
 
-        return ResultT<IEnumerable<ServiceFilterDTos>>.Success(serviceFilterDTos);
+        return ResultT<IEnumerable<ServiceFilterDTos>>.Success(serviceFilterDTosEnumerable);
     }
+
+    public async Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByDurationMinutesAsync(
+        Guid registeredCompaniesId,
+        int durationInMinutes,
+        CancellationToken cancellationToken)
+    {
+        var registeredCompanies =
+            await registeredCompanyRepository.GetByIdAsync(registeredCompaniesId, cancellationToken);
+        if (registeredCompanies == null)
+        {
+            logger.LogError("Service search failed: No company found with ID {CompanyId}.", registeredCompaniesId);
+            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.NotFound("404",$"No company found with ID '{registeredCompaniesId}'"));
+        }
+
+        var servicesByDurationInMinutes = await repository.GetServicesByDurationInMinutesAsync(
+            registeredCompaniesId, 
+            durationInMinutes, 
+            cancellationToken);
+        
+        List<Domain.Models.Services> byDurationInMinutes = servicesByDurationInMinutes.ToList();
+
+        if (!byDurationInMinutes.Any())
+        {
+            logger.LogWarning("No services found for company ID {CompanyId} with duration of {Duration} minutes.",
+                registeredCompaniesId, durationInMinutes);
+            return ResultT<IEnumerable<ServicesDTos>>.Failure(Error.NotFound("404",
+                $"No services found with {durationInMinutes} minutes duration in the company."));
+        }
+
+        var servicesDTosEnumerable = byDurationInMinutes.Select(x => new ServicesDTos
+        (
+            ServiceId: x.ServicesId,
+            Name: x.Name,
+            Price: x.Price,
+            Description: x.Description,
+            DurationInMinutes: x.DurationInMinutes,
+            ImageUrl: x.ImageUrl,
+            Status: x.Status,
+            RegisteredCompanyId: x.RegisteredCompanyId,
+            CreatedAt: x.CreatedAt,
+            UpdateAt: x.UpdateAt
+        ));
     
+        logger.LogInformation("Successfully found {Count} services with {Duration} minutes duration for company ID {CompanyId}.",
+            byDurationInMinutes.Count, durationInMinutes, registeredCompaniesId);
+
+        return ResultT<IEnumerable<ServicesDTos>>.Success(servicesDTosEnumerable);
+    }
 }

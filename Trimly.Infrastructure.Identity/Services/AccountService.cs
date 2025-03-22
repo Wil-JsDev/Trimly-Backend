@@ -192,7 +192,7 @@ public class AccountService(
             {
                 To = request.Email,
                 Body = $@"
-                <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #1F2937;'>
+                <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #1f2937;'>
                     <h1 style='color: #8B5CF6; font-size: 26px; margin-bottom: 20px; text-align: center;'>Confirm Your Account Registration</h1>
                     <p style='font-size: 16px; margin-bottom: 20px; text-align: center;'>
                         Hello <strong style='color: #F97316;'>{request.Email}</strong>, <br>
@@ -246,7 +246,7 @@ public class AccountService(
         {
             To = request.Email,
             Body = $@"
-            <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #111827;'>
+            <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #1f2937;'>
                 <h1 style='color: #8B5CF6; font-size: 26px; margin-bottom: 20px; text-align: center;'>Reset Your Password</h1>
                 <p style='font-size: 16px; margin-bottom: 20px; text-align: center;'>
                     Hello <strong style='color: #F97316;'>{request.Email}</strong>, <br>
@@ -307,6 +307,7 @@ public class AccountService(
         {
             UserId = user.Id,
             FirstName = user.FirstName,
+            Username = user.UserName,
             LastName = user.LastName,
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
@@ -315,13 +316,13 @@ public class AccountService(
         return ApiResponse<AccountDto>.SuccessResponse(account);
     }
 
-    public async Task<ApiResponse<AccountDto>> UpdateAccountDetailsAsync(UpdateAccountDto status, string id)
+    public async Task<ApiResponse<UpdateAccountDto>> UpdateAccountDetailsAsync(UpdateAccountDto status, string id)
     {
         var user = await userManager.FindByIdAsync(id);
 
         if (user == null)
         {
-            return ApiResponse<AccountDto>.ErrorResponse("Account not found"); 
+            return ApiResponse<UpdateAccountDto>.ErrorResponse("Account not found"); 
         }
         
         user.FirstName = status.FirstName;
@@ -330,13 +331,13 @@ public class AccountService(
             
         var updateUser = await userManager.UpdateAsync(user);
 
-        AccountDto accountDto = new()
+        UpdateAccountDto accountDto = new()
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
             Username = user.UserName
         };
-        return ApiResponse<AccountDto>.SuccessResponse(accountDto);
+        return ApiResponse<UpdateAccountDto>.SuccessResponse(accountDto);
     }
     
     
@@ -346,40 +347,42 @@ public class AccountService(
         
     }
     
+    #region Private Methods
+
     private async Task<JwtSecurityToken> GenerateTokenAsync(User user)
     {
-         var userClaims = await userManager.GetClaimsAsync(user);
-         var roles = await userManager.GetRolesAsync(user);
+        var userClaims = await userManager.GetClaimsAsync(user);
+        var roles = await userManager.GetRolesAsync(user);
      
-     List<Claim> rolesClaims = new List<Claim>();
+        List<Claim> rolesClaims = new List<Claim>();
      
-     foreach (var role in roles)
-     {
-         rolesClaims.Add(new Claim("roles", role));
-     }
+        foreach (var role in roles)
+        {
+            rolesClaims.Add(new Claim("roles", role));
+        }
 
-     var claim = new[]
-     {
-         new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-         new Claim(JwtRegisteredClaimNames.Email, user.Email),
-         new Claim("Id", user.Id)
-     }
-     .Union(userClaims)
-     .Union(rolesClaims);
+        var claim = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("Id", user.Id)
+            }
+            .Union(userClaims)
+            .Union(rolesClaims);
          
-         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JwtSettings.Key));
-         var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JwtSettings.Key));
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-         var jwtSecurityToken = new JwtSecurityToken
-         (
+        var jwtSecurityToken = new JwtSecurityToken
+        (
             issuer: _JwtSettings.Issuer,
             audience: _JwtSettings.Audience,
             claims: claim,
             expires: DateTime.Now.AddMinutes(_JwtSettings.DurationInMinutes),
             signingCredentials: signingCredentials
-         );
-         return jwtSecurityToken;
+        );
+        return jwtSecurityToken;
     }
 
     private RefreshToken GenerateRefreshToken()
@@ -391,9 +394,7 @@ public class AccountService(
             Created = DateTime.UtcNow
         };
     }
-
-    #region Private Methods
-
+    
     private string RandomTokenString()
     {
         using var rng = RandomNumberGenerator.Create();

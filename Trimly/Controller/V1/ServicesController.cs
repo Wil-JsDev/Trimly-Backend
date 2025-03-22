@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Trimly.Core.Application.DTOs.RegisteredCompanies;
 using Trimly.Core.Application.DTOs.Service;
 using Trimly.Core.Application.Interfaces.Service;
@@ -17,6 +19,8 @@ public class ServicesController(
 {
 
     [HttpGet("pagination")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetPagedResultAsync(
     [FromQuery] int pageNumber,
     [FromQuery] int pageSize,
@@ -29,6 +33,8 @@ public class ServicesController(
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await service.GetByIdAsync(id, cancellationToken);
@@ -39,6 +45,8 @@ public class ServicesController(
     }
 
     [HttpPost]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Barber,Owner")]
     public async Task<IActionResult> CreateAsync([FromForm] CreateServiceDTos serviceDTos,CancellationToken cancellationToken)
     {
         var resultValidation = await validatorCreate.ValidateAsync(serviceDTos, cancellationToken);
@@ -53,6 +61,8 @@ public class ServicesController(
     }
 
     [HttpPut("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Barber,Owner")]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] Guid id, 
         [FromBody] UpdateServiceDTos serviceDTos, 
@@ -70,6 +80,8 @@ public class ServicesController(
     }
 
     [HttpDelete("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Barber,Owner")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await service.DeleteAsync(id, cancellationToken);
@@ -78,9 +90,10 @@ public class ServicesController(
         
         return NotFound(result.Error);
     }
-    
 
     [HttpGet("companies/{registeredCompanyId}/services/search/short-duration")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetServiceShortDuration([FromRoute] Guid registeredCompanyId,CancellationToken cancellationToken)
     {
         var result = await service.GetServicesWithDurationLessThan30MinutesAsync(registeredCompanyId,cancellationToken);
@@ -91,6 +104,8 @@ public class ServicesController(
     }
 
     [HttpGet("companies/{registeredCompanyId}/services")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetServicesByCompanyId([FromRoute] Guid registeredCompanyId,
         CancellationToken cancellationToken)
     {
@@ -102,6 +117,8 @@ public class ServicesController(
     }
 
     [HttpGet("companies/{registeredCompanyId}/services/search/name/{name}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> SearchNameAsync(
         [FromRoute] Guid registeredCompanyId,
         [FromRoute] string name, 
@@ -115,6 +132,8 @@ public class ServicesController(
     }
     
     [HttpGet("companies/{registeredCompanyId}/services/search/{price}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> SearchByPriceAsync(
         [FromRoute] Guid registeredCompanyId,
         [FromRoute] decimal price, 
@@ -126,5 +145,19 @@ public class ServicesController(
         
         return BadRequest(result.Error);
     }
-    
+
+    [HttpGet("companies/{registeredCompanyId}/services/search/duration-in-minutes/{durationInMinutes}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
+    public async Task<IActionResult> SearchByDurationInMinutesAsync(
+        [FromRoute] Guid registeredCompanyId,
+        int durationInMinutes, 
+        CancellationToken cancellationToken)
+    {
+        var result = await service.GetServicesByDurationMinutesAsync(registeredCompanyId, durationInMinutes, cancellationToken);
+        if (result.IsSuccess)
+            return Ok(result.Value);
+
+        return NotFound(result.Error);
+    }
 }
