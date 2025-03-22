@@ -13,10 +13,10 @@ public class ResetPasswordAccount : AbstractValidator<ResetPasswordRequest>
         
         RuleFor(x => x.ConfirmPassword)
             .NotEmpty().WithMessage("Confirm password is required.")
-            .MinimumLength(6).WithMessage("Confirm password must be at least 2 characters long.");
+            .MinimumLength(6).WithMessage("Confirm password must be at least 6 characters long.");
         
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.")
-            .MinimumLength(6).WithMessage("Password must be at least 2 characters long.");
+            .MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
     }
 }

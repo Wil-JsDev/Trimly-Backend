@@ -9,14 +9,14 @@ public class UpdateAccount : AbstractValidator<UpdateAccountDto>
     {
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required.")
-            .MinimumLength(2).WithMessage("First name must be at least 2 characters long.");
+            .MinimumLength(3).WithMessage("First name must be at least 3 characters long.");
 
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("Last name is required.")
-            .MinimumLength(4).WithMessage("Last name must be at least 2 characters long.");
+            .MinimumLength(4).WithMessage("Last name must be at least 4 characters long.");
 
         RuleFor(x => x.Username)
             .NotEmpty().WithMessage("Username is required.")
-            .MinimumLength(6).WithMessage("Username must be at least 4 characters long.");
+            .MinimumLength(6).WithMessage("Username must be at least 6 characters long.");
     }
 }
