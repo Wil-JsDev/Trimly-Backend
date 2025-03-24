@@ -52,8 +52,8 @@ try
             var userManager = services.GetRequiredService<UserManager<User>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             
-            await DefaultOwnerRoles.SeedAsync(userManager, roleManager);
             await DefaultRoles.SeedAsync(userManager, roleManager);
+            await DefaultOwnerRoles.SeedAsync(userManager, roleManager);
         }
         catch (Exception ex)
         {

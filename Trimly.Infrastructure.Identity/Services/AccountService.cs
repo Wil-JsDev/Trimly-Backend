@@ -111,25 +111,294 @@ public class AccountService(
             {
                 To = request.Email,
                 Body = $@"
-                <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #F2937;'>
-                    <h1 style='color: #8B5CF6; font-size: 26px; margin-bottom: 20px; text-align: center;'>Confirm Your Account Registration</h1>
-                    <p style='font-size: 16px; margin-bottom: 20px; text-align: center;'>
-                        Hello <strong style='color: #F97316;'>{request.Email}</strong>, <br>
-                        Thank you for registering as an <strong>Owner</strong> on Trimly. To complete your account setup, please use the verification token provided below.
-                    </p>
-                    <div style='font-size: 16px; background-color: #374151; padding: 20px; border: 1px dashed #F59E0B; border-radius: 8px; margin-bottom: 20px; text-align: center;'>
-                        <strong style='color: #F9FAFB;'>Your Verification Token:</strong>
-                        <p style='font-size: 18px; color: #8B5CF6; font-weight: bold;'>{verification}</p>
-                    </div>
-                    <p style='font-size: 14px; margin-bottom: 20px; text-align: center;'>
-                        If you didn’t request this email, no further action is required. Please feel free to contact us if you have any concerns.
-                    </p>
-                    <hr style='border: none; border-top: 1px solid #374151; margin: 30px 0;'>
-                    <p style='font-size: 12px; color: #9CA3AF; text-align: center;'>
-                        This email is brought to you by <strong style='color: #F59E0B;'>Trimly</strong>. <br>
-                        Please do not reply directly to this email as it is not monitored.
-                    </p>
-                </div>",
+                <div
+  style=""
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #f9fafb;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 16px;
+    padding: 0;
+    background-color: #111827;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  ""
+>
+  <!-- Header with gradient -->
+  <div
+    style=""
+      background: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #6d28d9 50%,
+        #4c1d95 100%
+      );
+      padding: 30px 20px;
+      text-align: center;
+    ""
+  >
+    <div
+      style=""
+        display: inline-block;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 50px;
+        padding: 8px 16px;
+        margin-bottom: 20px;
+      ""
+    >
+      <span
+        style=""
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 1px;
+        ""
+        >TRIMLY ACCOUNT</span
+      >
+    </div>
+    <h1
+      style=""
+        color: #ffffff;
+        font-size: 32px;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: -0.5px;
+      ""
+    >
+      Verify Your Account
+    </h1>
+    <p
+      style=""
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin: 0;
+        font-weight: 400;
+      ""
+    >
+      Complete your registration in one simple step
+    </p>
+  </div>
+
+  <!-- Main content area with subtle gradient -->
+  <div
+    style=""
+      background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+      padding: 40px 30px;
+    ""
+  >
+    <!-- Welcome message card -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      ""
+    >
+      <p style=""font-size: 17px; margin: 0; line-height: 1.7"">
+        Hello
+        <strong style=""color: #f97316; font-weight: 600"">{request.Email}</strong
+        >,
+        <br />
+        Thank you for registering as an
+        <span
+          style=""
+            display: inline-block;
+            background-color: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 14px;
+            color: #a78bfa;
+            font-weight: 600;
+          ""
+          >Owner</span
+        >
+        on Trimly. We're excited to have you on board!
+      </p>
+    </div>
+
+    <!-- Verification token box -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <p
+        style=""
+          font-size: 16px;
+          color: #9ca3af;
+          margin-bottom: 15px;
+          font-weight: 500;
+        ""
+      >
+        Please use the verification code below to complete your account setup:
+      </p>
+
+      <div
+        style=""
+          background: linear-gradient(145deg, #2d3748, #1e293b);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          border-radius: 12px;
+          padding: 25px;
+          position: relative;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        ""
+      >
+        <!-- Decorative elements -->
+        <div
+          style=""
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: #f59e0b;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+        <div
+          style=""
+            position: absolute;
+            bottom: -5px;
+            right: 30px;
+            background-color: #8b5cf6;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+
+        <p
+          style=""
+            font-size: 14px;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+          ""
+        >
+          Verification Code
+        </p>
+        <div
+          style=""
+            font-size: 12px;
+            color: #f59e0b;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+          ""
+        >
+          {verification}
+        </div>
+        <p style=""font-size: 12px; color: #9ca3af; margin-top: 15px"">
+          This code will expire in 30 minutes
+        </p>
+      </div>
+    </div>
+
+    <!-- Action button -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <a
+        href=""#""
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #f59e0b, #f97316);
+          color: #ffffff;
+          font-weight: 600;
+          padding: 14px 30px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-size: 16px;
+          box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+        ""
+        >Verify My Account</a
+      >
+    </div>
+
+    <!-- Security note -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      ""
+    >
+      <p style=""font-size: 14px; color: #9ca3af; margin: 0; line-height: 1.6"">
+        <span style=""color: #f59e0b; font-weight: 600"">Security Note:</span> If
+        you didn't request this email, please ignore it or contact our support
+        team immediately. Your account security is important to us.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    style=""
+      background-color: rgba(17, 24, 39, 0.8);
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    ""
+  >
+    <div style=""margin-bottom: 20px"">
+      <span
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #8b5cf6, #f59e0b);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-size: 24px;
+          font-weight: 800;
+        ""
+        >Trimly</span
+      >
+    </div>
+    <p style=""font-size: 13px; color: #6b7280; margin: 0 0 15px 0"">
+      This is an automated message, please do not reply directly to this email.
+    </p>
+    <div style=""margin-top: 20px"">
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Help Center</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Privacy Policy</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Terms of Service</a
+      >
+    </div>
+    <p style=""font-size: 12px; color: #4b5563; margin-top: 20px"">
+      © 2025 Trimly. All rights reserved.
+    </p>
+  </div>
+</div>",
                 Subject = "Confirm Your Account Registration"
 
             });
@@ -192,25 +461,280 @@ public class AccountService(
             {
                 To = request.Email,
                 Body = $@"
-                <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #1f2937;'>
-                    <h1 style='color: #8B5CF6; font-size: 26px; margin-bottom: 20px; text-align: center;'>Confirm Your Account Registration</h1>
-                    <p style='font-size: 16px; margin-bottom: 20px; text-align: center;'>
-                        Hello <strong style='color: #F97316;'>{request.Email}</strong>, <br>
-                        Thank you for registering with us. To complete your account setup, please use the verification token provided below.
-                    </p>
-                    <div style='font-size: 16px; background-color: #374151; padding: 20px; border: 1px dashed #F59E0B; border-radius: 8px; margin-bottom: 20px; text-align: center;'>
-                        <strong style='color: #F9FAFB;'>Your Verification Token:</strong>
-                        <p style='font-size: 18px; color: #8B5CF6; font-weight: bold;'>{verification}</p>
-                    </div>
-                    <p style='font-size: 14px; margin-bottom: 20px; text-align: center;'>
-                        If you didn’t request this email, no further action is required. Please feel free to contact us if you have any concerns.
-                    </p>
-                    <hr style='border: none; border-top: 1px solid #374151; margin: 30px 0;'>
-                    <p style='font-size: 12px; color: #9CA3AF; text-align: center;'>
-                        This email is brought to you by <strong style='color: #F59E0B;'>Trimly</strong>. <br>
-                        Please do not reply directly to this email as it is not monitored.
-                    </p>
-                </div>",
+                <div
+  style=""
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #f9fafb;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 16px;
+    padding: 0;
+    background-color: #111827;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  ""
+>
+  <!-- Header with gradient -->
+  <div
+    style=""
+      background: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #6d28d9 50%,
+        #4c1d95 100%
+      );
+      padding: 30px 20px;
+      text-align: center;
+    ""
+  >
+    <div
+      style=""
+        display: inline-block;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 50px;
+        padding: 8px 16px;
+        margin-bottom: 20px;
+      ""
+    >
+      <span
+        style=""
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 1px;
+        ""
+        >TRIMLY ACCOUNT</span
+      >
+    </div>
+    <h1
+      style=""
+        color: #ffffff;
+        font-size: 32px;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: -0.5px;
+      ""
+    >
+      Verify Your Account
+    </h1>
+    <p
+      style=""
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin: 0;
+        font-weight: 400;
+      ""
+    >
+      Complete your registration in one simple step
+    </p>
+  </div>
+
+  <!-- Main content area with subtle gradient -->
+  <div
+    style=""
+      background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+      padding: 40px 30px;
+    ""
+  >
+    <!-- Welcome message card -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      ""
+    >
+      <p style=""font-size: 17px; margin: 0; line-height: 1.7"">
+        Hello
+        <strong style=""color: #f97316; font-weight: 600"">{request.Email}</strong
+        >,
+        <br />
+        Thank you for registering as on Trimly.
+      </p>
+    </div>
+
+    <!-- Verification token box -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <p
+        style=""
+          font-size: 16px;
+          color: #9ca3af;
+          margin-bottom: 15px;
+          font-weight: 500;
+        ""
+      >
+        Please use the verification code below to complete your account setup:
+      </p>
+
+      <div
+        style=""
+          background: linear-gradient(145deg, #2d3748, #1e293b);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          border-radius: 12px;
+          padding: 25px;
+          position: relative;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        ""
+      >
+        <!-- Decorative elements -->
+        <div
+          style=""
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: #f59e0b;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+        <div
+          style=""
+            position: absolute;
+            bottom: -5px;
+            right: 30px;
+            background-color: #8b5cf6;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+
+        <p
+          style=""
+            font-size: 14px;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+          ""
+        >
+          Verification Code
+        </p>
+        <div
+          style=""
+            font-size: 12px;
+            color: #f59e0b;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+          ""
+        >
+          {verification}
+        </div>
+        <p style=""font-size: 12px; color: #9ca3af; margin-top: 15px"">
+          This code will expire in 30 minutes
+        </p>
+      </div>
+    </div>
+
+    <!-- Action button -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <a
+        href=""#""
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #f59e0b, #f97316);
+          color: #ffffff;
+          font-weight: 600;
+          padding: 14px 30px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-size: 16px;
+          box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+        ""
+        >Verify My Account</a
+      >
+    </div>
+
+    <!-- Security note -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      ""
+    >
+      <p style=""font-size: 14px; color: #9ca3af; margin: 0; line-height: 1.6"">
+        <span style=""color: #f59e0b; font-weight: 600"">Security Note:</span> If
+        you didn't request this email, please ignore it or contact our support
+        team immediately. Your account security is important to us.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    style=""
+      background-color: rgba(17, 24, 39, 0.8);
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    ""
+  >
+    <div style=""margin-bottom: 20px"">
+      <span
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #8b5cf6, #f59e0b);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-size: 24px;
+          font-weight: 800;
+        ""
+        >Trimly</span
+      >
+    </div>
+    <p style=""font-size: 13px; color: #6b7280; margin: 0 0 15px 0"">
+      This is an automated message, please do not reply directly to this email.
+    </p>
+    <div style=""margin-top: 20px"">
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Help Center</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Privacy Policy</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Terms of Service</a
+      >
+    </div>
+    <p style=""font-size: 12px; color: #4b5563; margin-top: 20px"">
+      © 2025 Trimly. All rights reserved.
+    </p>
+  </div>
+</div>",
                 Subject = "Confirm Your Account Registration"
             });
         }
@@ -246,26 +770,403 @@ public class AccountService(
         {
             To = request.Email,
             Body = $@"
-            <div style='font-family: Arial, sans-serif; color: #F9FAFB; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #374151; border-radius: 10px; padding: 25px; background-color: #1f2937;'>
-                <h1 style='color: #8B5CF6; font-size: 26px; margin-bottom: 20px; text-align: center;'>Reset Your Password</h1>
-                <p style='font-size: 16px; margin-bottom: 20px; text-align: center;'>
-                    Hello <strong style='color: #F97316;'>{request.Email}</strong>, <br>
-                    We received a request to reset your password for your Trimly account. To reset your password, please use the verification code below.
-                </p>
-                <div style='font-size: 16px; background-color: #374151; padding: 20px; border: 1px dashed #F59E0B; border-radius: 8px; margin-bottom: 20px; text-align: center;'>
-                    <strong style='color: #F9FAFB;'>Your Verification Code:</strong>
-                    <p style='font-size: 18px; color: #8B5CF6; font-weight: bold;'>{verification}</p>
-                </div>
-                <p style='font-size: 14px; margin-bottom: 20px; text-align: center;'>
-                    If you didn’t request this email, no further action is required. Please feel free to contact us if you have any concerns.
-                </p>
-                <hr style='border: none; border-top: 1px solid #374151; margin: 30px 0;'>
-                <p style='font-size: 12px; color: #9CA3AF; text-align: center;'>
-                    This email is brought to you by <strong style='color: #F59E0B;'>Trimly</strong>. <br>
-                    Please don't worry about your password; we're here to help.
-                </p>
-            </div>",
+             <div
+  style=""
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #f9fafb;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 16px;
+    padding: 0;
+    background-color: #111827;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  ""
+>
+  <!-- Header with gradient -->
+  <div
+    style=""
+      background: linear-gradient(
+        135deg,
+        #8b5cf6 0%,
+        #6d28d9 50%,
+        #4c1d95 100%
+      );
+      padding: 30px 20px;
+      text-align: center;
+    ""
+  >
+    <div
+      style=""
+        display: inline-block;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 50px;
+        padding: 8px 16px;
+        margin-bottom: 20px;
+      ""
+    >
+      <span
+        style=""
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 1px;
+        ""
+        >PASSWORD RECOVERY</span
+      >
+    </div>
+    <h1
+      style=""
+        color: #ffffff;
+        font-size: 32px;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: -0.5px;
+      ""
+    >
+      Forgot Your Password?
+    </h1>
+    <p
+      style=""
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin: 0;
+        font-weight: 400;
+      ""
+    >
+      No worries, we'll help you get back in
+    </p>
+  </div>
 
+  <!-- Main content area with subtle gradient -->
+  <div
+    style=""
+      background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+      padding: 40px 30px;
+    ""
+  >
+    <!-- Welcome message card -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid #f59e0b;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+      ""
+    >
+      <p style=""font-size: 17px; margin: 0; line-height: 1.7"">
+        Hello
+        <strong style=""color: #f97316; font-weight: 600"">{request.Email}</strong
+        >,
+        <br />
+        We received a request to reset the password for your Trimly account.
+        Don't worry - it happens to everyone!
+      </p>
+    </div>
+
+    <!-- Password reset steps -->
+    <div style=""margin-bottom: 30px"">
+      <p
+        style=""
+          font-size: 16px;
+          color: #f9fafb;
+          margin-bottom: 15px;
+          font-weight: 500;
+        ""
+      >
+        Follow these simple steps to reset your password:
+      </p>
+
+      <div style=""display: flex; margin-bottom: 15px; align-items: flex-start"">
+        <div
+          style=""
+            background-color: #8b5cf6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+          ""
+        >
+          1
+        </div>
+        <div style=""flex: 1"">
+          <p style=""margin: 0; color: #e5e7eb; font-size: 15px"">
+            Copy the verification code below
+          </p>
+        </div>
+      </div>
+
+      <div style=""display: flex; margin-bottom: 15px; align-items: flex-start"">
+        <div
+          style=""
+            background-color: #8b5cf6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+          ""
+        >
+          2
+        </div>
+        <div style=""flex: 1"">
+          <p style=""margin: 0; color: #e5e7eb; font-size: 15px"">
+            Click the ""Reset Password"" button below to go to our secure password
+            reset page
+          </p>
+        </div>
+      </div>
+
+      <div style=""display: flex; margin-bottom: 15px; align-items: flex-start"">
+        <div
+          style=""
+            background-color: #8b5cf6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+          ""
+        >
+          3
+        </div>
+        <div style=""flex: 1"">
+          <p style=""margin: 0; color: #e5e7eb; font-size: 15px"">
+            Enter the verification code when prompted and create your new
+            password
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verification token box -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <div
+        style=""
+          background: linear-gradient(145deg, #2d3748, #1e293b);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          border-radius: 12px;
+          padding: 25px;
+          position: relative;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        ""
+      >
+        <!-- Decorative elements -->
+        <div
+          style=""
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: #f59e0b;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+        <div
+          style=""
+            position: absolute;
+            bottom: -5px;
+            right: 30px;
+            background-color: #8b5cf6;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            opacity: 0.1;
+          ""
+        ></div>
+
+        <p
+          style=""
+            font-size: 14px;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+          ""
+        >
+          Your Verification Code
+        </p>
+        <div
+          style=""
+            font-size: 12px;
+            color: #f59e0b;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+          ""
+        >
+          {verification}
+        </div>
+        <p style=""font-size: 12px; color: #9ca3af; margin-top: 15px"">
+          This code will expire in 30 minutes for security reasons
+        </p>
+      </div>
+    </div>
+
+    <!-- Action button -->
+    <div style=""text-align: center; margin-bottom: 35px"">
+      <a
+        href=""#""
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #f59e0b, #f97316);
+          color: #ffffff;
+          font-weight: 600;
+          padding: 14px 30px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-size: 16px;
+          box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+        ""
+        >Reset Password</a
+      >
+    </div>
+
+    <!-- Security note -->
+    <div
+      style=""
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      ""
+    >
+      <p style=""font-size: 14px; color: #9ca3af; margin: 0; line-height: 1.6"">
+        <span style=""color: #f59e0b; font-weight: 600"">Security Note:</span> If
+        you didn't request to reset your password, you can safely ignore this
+        email. Your account is still secure, and no changes have been made.
+      </p>
+    </div>
+
+    <!-- Password tips -->
+    <div
+      style=""
+        background-color: rgba(139, 92, 246, 0.05);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(139, 92, 246, 0.1);
+      ""
+    >
+      <p
+        style=""
+          font-size: 14px;
+          color: #a78bfa;
+          font-weight: 600;
+          margin: 0 0 10px 0;
+        ""
+      >
+        Creating a Strong Password:
+      </p>
+      <ul
+        style=""margin: 0; padding: 0 0 0 20px; color: #9ca3af; font-size: 13px""
+      >
+        <li style=""margin-bottom: 5px"">
+          Use at least 8 characters with a mix of letters, numbers, and symbols
+        </li>
+        <li style=""margin-bottom: 5px"">
+          Avoid using easily guessable information like birthdays
+        </li>
+        <li style=""margin-bottom: 0"">
+          Consider using a unique password you don't use elsewhere
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    style=""
+      background-color: rgba(17, 24, 39, 0.8);
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    ""
+  >
+    <div style=""margin-bottom: 20px"">
+      <span
+        style=""
+          display: inline-block;
+          background: linear-gradient(to right, #8b5cf6, #f59e0b);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-size: 24px;
+          font-weight: 800;
+        ""
+        >TRIMLY</span
+      >
+    </div>
+    <p style=""font-size: 13px; color: #6b7280; margin: 0 0 15px 0"">
+      Need help? Contact our support team at
+      <a
+        href=""mailto:support@trimly.com""
+        style=""color: #a78bfa; text-decoration: none""
+        >support@trimly.com</a
+      >
+    </p>
+    <div style=""margin-top: 20px"">
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Help Center</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Privacy Policy</a
+      >
+      <a
+        href=""#""
+        style=""
+          color: #9ca3af;
+          text-decoration: none;
+          font-size: 13px;
+          margin: 0 10px;
+        ""
+        >Terms of Service</a
+      >
+    </div>
+    <p style=""font-size: 12px; color: #4b5563; margin-top: 20px"">
+      © 2025 Trimly. All rights reserved.
+    </p>
+  </div>
+</div>
+                "    
+            ,
             Subject = "Reset Your Password"
 
         });
