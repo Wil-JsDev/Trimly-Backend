@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Trimly.Core.Application.DTOs.Review;
 using Trimly.Core.Application.Interfaces.Service;
 
@@ -15,6 +17,8 @@ public class ReviewController(
     IValidator<ReviewsUpdateDTos> validatorUpdate) : ControllerBase
 {
     [HttpGet("pagination")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetPagedResult(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
@@ -28,6 +32,8 @@ public class ReviewController(
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await serviceReview.GetByIdAsync(id, cancellationToken);
@@ -38,6 +44,8 @@ public class ReviewController(
     }
 
     [HttpPost]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> CreateAsync([FromBody] CreateReviewsDTos createReviewsDTos,CancellationToken cancellationToken)
     {
         var resultValidation = await validatorCreate.ValidateAsync(createReviewsDTos, cancellationToken);
@@ -52,6 +60,8 @@ public class ReviewController(
     }
 
     [HttpPut("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] ReviewsUpdateDTos updateReviewsDTos,
@@ -69,6 +79,8 @@ public class ReviewController(
     }
 
     [HttpDelete("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await serviceReview.DeleteAsync(id, cancellationToken);
@@ -79,6 +91,8 @@ public class ReviewController(
     }
 
     [HttpGet("company/{registeredCompanyId}/average-rating")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetAverageRatingAsync(Guid registeredCompanyId,
         CancellationToken cancellationToken)
     {
@@ -88,5 +102,4 @@ public class ReviewController(
         
         return BadRequest(result.Error);
     }
-    
 }

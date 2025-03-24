@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using Trimly.Core.Application;
 using Trimly.Infrastructure.Persistence;
 using Trimly.Infrastructure.Shared;
 using Trimly.Infrastructure.Identity;
+using Trimly.Infrastructure.Identity.Models;
+using Trimly.Infrastructure.Identity.Seeds;
 using Trimly.Presentation.BackgroundService;
 using Trimly.Presentation.ServiceExtension;
 using Trimly.Presentation.Extensions;
@@ -36,8 +39,29 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddException();
     builder.Services.AddValidation();
+    builder.Services.AddRateLimiting();
     
     var app = builder.Build();
+    
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        try
+        {
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            
+            await DefaultOwnerRoles.SeedAsync(userManager, roleManager);
+            await DefaultRoles.SeedAsync(userManager, roleManager);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred during role seeding.");
+        }
+    }
+    
     app.UseExceptionHandler(_ => { });
     //await app.Services.SeedDatabaseAsync();
     app.UseSerilogRequestLogging();
@@ -51,6 +75,10 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseRateLimiter();
+    
+    app.UseAuthentication();
+    
     app.UseAuthorization();
 
     app.UseSwaggerExtension();

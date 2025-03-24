@@ -77,7 +77,7 @@ namespace Trimly.Infrastructure.Identity
                         c.HandleResponse();
                         c.Response.StatusCode = 401;
                         c.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(new JWTResponse { HasError = true, Error = "You aren't Authorized" });
+                        var result = JsonConvert.SerializeObject(new JWTResponse{HasError = true, Error = "An unexpected authentication error occurred"});
                         return c.Response.WriteAsync(result);
                     },
                     OnForbidden = c =>

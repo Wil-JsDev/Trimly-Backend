@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore.Internal;
 using Trimly.Core.Application.DTOs.Appointment;
 using Trimly.Core.Application.DTOs.RegisteredCompanies;
@@ -20,6 +22,8 @@ public class RegisteredCompanyController(
     IValidator<RegisteredCompaniesUpdateDTos> validatorUpdate) : ControllerBase
 {
     [HttpPost]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> CreateAsync([FromForm] CreateRegisteredCompaniesDTos createRegisteredCompaniesDTos,CancellationToken cancellationToken )
     {
         var resultValidation = await validatorCreate.ValidateAsync(createRegisteredCompaniesDTos,cancellationToken);
@@ -34,6 +38,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpGet("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.GetByIdAsync(id, cancellationToken);
@@ -44,6 +50,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpPut("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid id,[FromForm] RegisteredCompaniesUpdateDTos updateRegisteredCompaniesDTos,CancellationToken cancellationToken)
     {
       var resultValidation = await validatorUpdate.ValidateAsync(updateRegisteredCompaniesDTos, cancellationToken);
@@ -58,6 +66,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpDelete("{id}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.DeleteAsync(id, cancellationToken);
@@ -68,6 +78,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpGet("pagination")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetPagedAsync([FromQuery] int pageNumber,[FromQuery] int pageSize,CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.GetPagedResult(pageNumber, pageSize, cancellationToken);
@@ -78,6 +90,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpGet("search/name/{name}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> SearchByNameAsync([FromRoute] string name,CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.FilterByNameAsync(name, cancellationToken);
@@ -88,6 +102,8 @@ public class RegisteredCompanyController(
     }
     
     [HttpGet("search/status/{status}")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> SearchByStatusAsync([FromQuery] Status status,CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.FilterByStatusAsync(status, cancellationToken);
@@ -98,6 +114,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpGet("order-by-name")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> OrderByNameAsync(CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.OrderByNameAsync(cancellationToken);
@@ -108,6 +126,8 @@ public class RegisteredCompanyController(
     }
     
     [HttpGet("recent")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetRecentAsync(CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.GetRecentAsync(cancellationToken);
@@ -118,6 +138,8 @@ public class RegisteredCompanyController(
     }
 
     [HttpGet("ordered")]
+    [EnableRateLimiting("fixed")]
+    [Authorize]
     public async Task<IActionResult> GetOrderedAsync([FromQuery] string orderBy,CancellationToken cancellationToken)
     {
         var result = await registeredCompanyServices.OrderByIdAsync(orderBy, cancellationToken);

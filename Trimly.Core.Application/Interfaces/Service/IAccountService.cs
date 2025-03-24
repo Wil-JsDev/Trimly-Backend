@@ -19,6 +19,6 @@ public interface IAccountService
     Task<ApiResponse<ResetPasswordResponse>> ResetPasswordAsync(ResetPasswordRequest request);
     Task<ApiResponse<AccountDto>> GetAccountDetailsAsync(string userId);
     Task LogOutAsync();
-    Task<ApiResponse<AccountDto>> UpdateAccountDetailsAsync(UpdateAccountDto status, string id);
+    Task<ApiResponse<UpdateAccountDto>> UpdateAccountDetailsAsync(UpdateAccountDto status, string id);
 
 }
