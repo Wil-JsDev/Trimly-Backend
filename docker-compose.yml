@@ -1,4 +1,31 @@
 services:
+  
+  PostgresSQL:
+    image: ${POSTGRES_IMAGE}
+    container_name: Postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORTS}:5432
+    volumes:
+      - PostgresDB:/var/lib/postgresql/data
+  
+  PgAdmin:
+    image: ${PG_ADMIN_IMAGE}
+    container_name: PgAdmin
+    restart: always
+    depends_on:
+      - PostgresSQL
+    ports:
+      - ${PGADMIN_PORTS}:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - PgAdmin:/var/lib/pgadmin
     
   SEQ:
     image: datalust/seq:latest
@@ -13,4 +40,6 @@ services:
     - SeqTrimly:/data
 
 volumes:
+  PostgresDB:
+  PgAdmin:
   SeqTrimly: 
