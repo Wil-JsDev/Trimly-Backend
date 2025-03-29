@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.Design;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +24,7 @@ namespace Trimly.Infrastructure.Identity
 
             services.AddDbContext<IdentityContext>(b =>
             {
-                b.UseSqlServer(configuration.GetConnectionString("IdentityConnection"),
+                b.UseNpgsql(configuration.GetConnectionString("IdentityConnection"),
                     c => c.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName));
             });
 
