@@ -34,6 +34,8 @@ public class ServicesController(
     }
 
     [HttpGet("companies/{registeredCompaniesId}/services/{year}/{month}")]
+    [Authorize(Roles = "Owner")]
+    [EnableRateLimiting("fixed")]
     public async Task<IActionResult> GetServicesByMonthAndYearsAsync(
         [FromRoute] Guid registeredCompaniesId,
         [FromRoute] int year,
