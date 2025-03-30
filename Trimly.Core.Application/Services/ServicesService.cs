@@ -413,4 +413,65 @@ public class ServicesService(
 
         return ResultT<IEnumerable<ServicesDTos>>.Success(servicesDTosEnumerable);
     }
+
+    public async Task<ResultT<IEnumerable<ServiceFilterMonthDTos>>> GetServicesByMonthAsync(Guid registeredCompanyId, int year,MonthFilter month,CancellationToken cancellationToken)
+    {
+        
+        var registeredCompanies = await registeredCompanyRepository.GetByIdAsync(registeredCompanyId, cancellationToken);
+        if (registeredCompanies == null)
+        {
+            logger.LogWarning("Company with ID '{RegisteredCompanyId}' was not found.", registeredCompanyId);
+            
+            return ResultT<IEnumerable<ServiceFilterMonthDTos>>.Failure(Error.NotFound("404", $"No company found with ID '{registeredCompanyId}'"));
+        }
+        
+        var filterValue = FilterYearAndMonth(registeredCompanyId,year);
+
+        if (filterValue.TryGetValue((month), out var result))
+        {
+            var filterMonthAndYear = await result(cancellationToken);
+            IEnumerable<Domain.Models.Services> serviceFilterMonthDTos = filterMonthAndYear.ToList();
+            
+            if (!serviceFilterMonthDTos.Any())
+            {
+                logger.LogWarning("No completed services found for Company ID '{RegisteredCompanyId}' in {Month} {Year}.", registeredCompanyId, month, year);
+                
+                return ResultT<IEnumerable<ServiceFilterMonthDTos>>.Failure(Error.Failure("400", $"No completed services found for {month} {year}."));
+            }
+
+            IEnumerable<ServiceFilterMonthDTos> serviceFilterMonthDTosEnumerable = serviceFilterMonthDTos.Select(x => new ServiceFilterMonthDTos
+            (
+                NameService: x.Name,
+                Price: x.Price,
+                AboutService: x.Description,
+                DurationInMinutes: x.DurationInMinutes,
+                ServicesStatus: x.ServiceStatus
+            ));
+
+            var filterMonthDTosEnumerable = serviceFilterMonthDTosEnumerable.ToList();
+            logger.LogInformation("Retrieved {Count} completed services for Company ID '{RegisteredCompanyId}' in {Month} {Year}.", filterMonthDTosEnumerable.Count(), registeredCompanyId, month, year);
+
+            return ResultT<IEnumerable<ServiceFilterMonthDTos>>.Success(filterMonthDTosEnumerable);
+        }
+        
+        logger.LogError("Invalid month filter: {Month} for year {Year}.", month, year);
+        
+        return ResultT<IEnumerable<ServiceFilterMonthDTos>>.Failure(Error.Failure("400", $"Invalid month filter: {month} for year {year}."));
+    }
+    
+    #region Private Methods
+    private Dictionary<MonthFilter, Func<CancellationToken, Task<IEnumerable<Domain.Models.Services>>>> FilterYearAndMonth(Guid registeredCompanyId, int year)
+    {
+        return Enum.GetValues<MonthFilter>().ToDictionary<MonthFilter, MonthFilter, Func<CancellationToken, Task<IEnumerable<Domain.Models.Services>>>>(
+            month => month,
+            month => new Func<CancellationToken, Task<IEnumerable<Domain.Models.Services>>> (async cancellationToken =>
+            {
+                int monthNumber = (int)month + 1; // Convert enum to number (January = 1, February = 2, etc.)
+                return await repository.GetCompletedServicesByMonthAsync(registeredCompanyId, year, monthNumber, cancellationToken);
+            })
+        );
+    }
+    #endregion
+    
 }
+
