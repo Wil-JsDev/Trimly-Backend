@@ -99,6 +99,12 @@ public class AppointmentService(
 
         await repository.CompletedAppointmentAsync(appointment, service, cancellationToken);
 
+        service.CompletedAt = DateTime.UtcNow;
+
+        await serviceRepository.UpdateAsync(service, cancellationToken);
+        
+        await serviceRepository.SaveChangesAsync(cancellationToken);
+        
         logger.LogInformation("Appointment with ID {AppointmentId} and Service ID {ServiceId} has been successfully marked as completed.", appointmentId, serviceId);
 
         return ResultT<string>.Success($"Your appointment has been successfully completed. Current status: {appointment.AppointmentStatus}.");
