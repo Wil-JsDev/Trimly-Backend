@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Trimly.Core.Application.DTOs.RegisteredCompanies;
 using Trimly.Core.Application.DTOs.Service;
 using Trimly.Core.Application.Interfaces.Service;
+using Trimly.Core.Domain.Enum;
 using Trimly.Presentation.Validations.Services;
 
 namespace Trimly.Presentation.Controller.V1;
@@ -32,6 +33,21 @@ public class ServicesController(
         return BadRequest(result.Error);
     }
 
+    [HttpGet("companies/{registeredCompaniesId}/services/{year}/{month}")]
+    public async Task<IActionResult> GetServicesByMonthAndYearsAsync(
+        [FromRoute] Guid registeredCompaniesId,
+        [FromRoute] int year,
+        [FromRoute] MonthFilter month,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await service.GetServicesByMonthAsync(registeredCompaniesId, year, month, cancellationToken);
+        if(result.IsSuccess)
+            return Ok(result.Value);
+        
+        return NotFound(result.Error);
+    }
+    
     [HttpGet("{id}")]
     [EnableRateLimiting("fixed")]
     [Authorize]
