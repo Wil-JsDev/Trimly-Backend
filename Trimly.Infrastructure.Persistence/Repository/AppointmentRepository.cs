@@ -19,6 +19,21 @@ namespace Trimly.Infrastructure.Persistence.Repository
             
             return exists;
         }
+
+        public async Task CompletedAppointmentAsync(Appointments appointment, Services service, CancellationToken cancellationToken)
+        {
+            appointment.AppointmentStatus = AppointmentStatus.Completed;
+            service.ServiceStatus = ServiceStatus.Completed;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task ConfirmAppointmentAsync(Appointments appointment, Services service,
+            CancellationToken cancellationToken)
+        {
+            appointment.AppointmentStatus = AppointmentStatus.Confirmed;
+            service.ServiceStatus = ServiceStatus.Pending;
+            await _context.SaveChangesAsync(cancellationToken);
+        }
         
         public async Task CancelAppointmentAsync(Appointments appointments, CancellationToken cancellationToken)
         {

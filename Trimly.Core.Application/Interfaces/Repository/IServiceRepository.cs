@@ -13,7 +13,7 @@ namespace Trimly.Core.Application.Interfaces.Repository
         Task<IEnumerable<Domain.Models.Services>> GetServicesWithDurationLessThan30MinutesAsync(Guid registeredCompaniesId, CancellationToken cancellationToken);
 
         Task<IEnumerable<Domain.Models.Services>> GetServicesByCompanyIdAsync(Guid companyId, CancellationToken cancellationToken);
-        
 
+        Task<IEnumerable<Domain.Models.Services>> GetCompletedServicesByMonthAsync(Guid registeredCompaniesId, int year, int month, CancellationToken cancellationToken);
     }
 }

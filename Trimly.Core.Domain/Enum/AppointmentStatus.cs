@@ -3,8 +3,9 @@ namespace Trimly.Core.Domain.Enum
 {
     public enum AppointmentStatus
     {
-        Confirmed,
         Pending,
+        Confirmed,
+        Completed,
         Cancelled,
         Rescheduled
     }

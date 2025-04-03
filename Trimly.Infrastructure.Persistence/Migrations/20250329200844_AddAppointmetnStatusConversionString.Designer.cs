@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trimly.Infrastructure.Persistence.Context;
@@ -11,9 +12,11 @@ using Trimly.Infrastructure.Persistence.Context;
 namespace Trimly.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(TrimlyContext))]
-    partial class TrimlyContextModelSnapshot : ModelSnapshot
+    [Migration("20250329200844_AddAppointmetnStatusConversionString")]
+    partial class AddAppointmetnStatusConversionString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,9 +194,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -221,10 +221,6 @@ namespace Trimly.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("RegisteredCompanyId")
                         .IsRequired()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("ServiceStatus")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
