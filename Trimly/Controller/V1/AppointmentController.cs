@@ -151,6 +151,36 @@ public class AppointmentController(
         
         return NotFound(result.Error);
     }
+
+    [HttpPost("{appointmentId}/confirm")]
+    [Authorize(Roles = "Client")]
+    [EnableRateLimiting("fixed")]
+    public async Task<IActionResult> ConfirmAppointmentAsync(
+        [FromRoute] Guid appointmentId,
+        [FromBody] AppointmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await service.ConfirmAppointmentAsync(appointmentId, request.ServiceId, cancellationToken);
+        if (result.IsSuccess)
+            return Ok(result.Value);
+        
+        return NotFound(result.Error);
+    }
+
+    [HttpPost("{appointmentId}/completed")]
+    [Authorize(Roles = "Owner")]
+    [EnableRateLimiting("fixed")]
+    public async Task<IActionResult> CompleteAppointmentAsync(
+        [FromRoute] Guid appointmentId,
+        [FromBody] AppointmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await service.CompletedAppointmentAsync(appointmentId, request.ServiceId, cancellationToken);
+        if(result.IsSuccess)
+            return Ok(result.Value);
+        
+        return NotFound(result.Error);
+    }
     
     [HttpGet("count-by-service/{serviceId}")]
     [EnableRateLimiting("fixed")]

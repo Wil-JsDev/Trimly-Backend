@@ -126,6 +126,9 @@ namespace Trimly.Infrastructure.Persistence.Context
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasConversion<string>();
+                entity.Property(e => e.ServiceStatus)
+                    .IsRequired()
+                    .HasConversion<string>();
             });
 
             #endregion
@@ -182,8 +185,10 @@ namespace Trimly.Infrastructure.Persistence.Context
                     .IsRequired();
                 entity.Property(e => e.AppointmentId)
                     .ValueGeneratedOnAdd();
+                entity.Property(e => e.AppointmentStatus)
+                    .IsRequired()
+                    .HasConversion<string>();
             });
-
             #endregion
         }
     }
