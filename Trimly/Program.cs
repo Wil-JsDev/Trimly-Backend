@@ -28,7 +28,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     var config = builder.Configuration;
-
+    
     builder.Services.AddPersistenceMethod(config);
     builder.Services.AddSharedLayer(config);
     builder.Services.AddIdentityLayer(config);
@@ -40,9 +40,17 @@ try
     builder.Services.AddException();
     builder.Services.AddValidation();
     builder.Services.AddRateLimiting();
-    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("Allow", policy =>
+        {
+            policy.WithOrigins("http://localhost:5081")
+                .AllowAnyMethod()  
+                .AllowAnyHeader();  
+        });
+    });
     var app = builder.Build();
-    
+    app.UseCors("Allow");
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
