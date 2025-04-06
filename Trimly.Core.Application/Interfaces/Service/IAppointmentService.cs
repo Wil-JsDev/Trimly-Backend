@@ -23,5 +23,9 @@ namespace Trimly.Core.Application.Interfaces.Service
         Task<ResultT<int>> GetTotalAppointmentsCountAsync(Guid serviceId, CancellationToken cancellationToken);
         Task<ResultT<string>> CancelAppointmentWithPenaltyAsync(Guid appointmentId, double penalizationPorcentage ,CancellationToken cancellationToken);
         Task<ResultT<ConfirmAppointmentDTos>> ConfirmAppointment(Guid appointmentId, string confirmationCode, CancellationToken cancellationToken);
+
+        Task<ResultT<string>> ConfirmAppointmentAsync(Guid appointmentId, Guid serviceId, CancellationToken cancellationToken);
+
+        Task<ResultT<string>> CompletedAppointmentAsync(Guid appointmentId, Guid serviceId, CancellationToken cancellationToken);
     }
 }

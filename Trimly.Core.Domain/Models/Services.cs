@@ -17,7 +17,10 @@ namespace Trimly.Core.Domain.Models
         public string? Description { get; set; }
 
         public int DurationInMinutes { get; set; }
-
+        
+        public ServiceStatus ServiceStatus { get; set; }
+        
+        public DateTime? CompletedAt { get; set; }
         public string? ImageUrl { get; set; }
 
         public Status? Status { get; set; }

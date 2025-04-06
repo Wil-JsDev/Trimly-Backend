@@ -1,4 +1,5 @@
 ﻿using Trimly.Core.Application.DTOs.Service;
+using Trimly.Core.Domain.Enum;
 using Trimly.Core.Domain.Utils;
 
 namespace Trimly.Core.Application.Interfaces.Service
@@ -18,5 +19,6 @@ namespace Trimly.Core.Application.Interfaces.Service
         
         Task<ResultT<IEnumerable<ServicesDTos>>> GetServicesByDurationMinutesAsync(Guid registeredCompaniesId, int durationInMinutes, CancellationToken cancellationToken);
 
+        Task<ResultT<IEnumerable<ServiceFilterMonthDTos>>> GetServicesByMonthAsync(Guid registeredCompanyId, int year, MonthFilter month, CancellationToken cancellationToken);
     }
 }
