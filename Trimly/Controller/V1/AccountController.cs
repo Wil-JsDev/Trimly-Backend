@@ -74,7 +74,7 @@ public class AccountController(
     [HttpPost("confirm-account")]
     [EnableRateLimiting("fixed")]
     public async Task<IActionResult> ConfirmAccountAsync([FromQuery] string userId, [FromQuery] string token)
-    {
+    {   
         var result = await accountService.ConfirmAccountAsync(userId, token);
         if (result.Success)
             return Ok(result.Data);
@@ -109,7 +109,6 @@ public class AccountController(
     }
 
     [HttpPost("forgot-password")]
-    [Authorize]
     [EnableRateLimiting("fixed")]
     public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotRequest request)
     {
@@ -125,7 +124,6 @@ public class AccountController(
     }
 
     [HttpPost("reset-password")]
-    [Authorize]
     [EnableRateLimiting("fixed")]
     public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequest request)
     {
