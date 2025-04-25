@@ -1,5 +1,4 @@
 services:
-  
   PostgresSQL:
     image: ${POSTGRES_IMAGE}
     container_name: Postgres
@@ -11,8 +10,8 @@ services:
     ports:
       - ${POSTGRES_PORTS}:5432
     volumes:
-      - PostgresDB:/var/lib/postgresql/data
-  
+      - PostgresDB-Production:/var/lib/postgresql/data
+
   PgAdmin:
     image: ${PG_ADMIN_IMAGE}
     container_name: PgAdmin
@@ -25,21 +24,21 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     volumes:
-      - PgAdmin:/var/lib/pgadmin
-    
+      - PgAdmin-Production:/var/lib/pgadmin
+
   SEQ:
     image: datalust/seq:latest
     container_name: Seq-Monitoring
     restart: always
     environment:
-    - ACCEPT_EULA=${SEQ_ACCEPT_EULA}
+      - ACCEPT_EULA=${SEQ_ACCEPT_EULA}
     ports:
-    - ${SEQ_PORT}:5341
-    - ${SEQ_PORT_UI}:80 
+      - ${SEQ_PORT}:5341
+      - ${SEQ_PORT_UI}:80
     volumes:
-    - SeqTrimly:/data
+      - SeqTrimly:/data
 
 volumes:
-  PostgresDB:
-  PgAdmin:
-  SeqTrimly: 
+  PostgresDB-Production:
+  PgAdmin-Production:
+  SeqTrimly:
