@@ -103,7 +103,7 @@ public class AppointmentController(
         return NotFound(result.Error);
     }
 
-    [HttpGet("cancel-appointment/{id}")]
+    [HttpPost("cancel-appointment/{id}")]
     [EnableRateLimiting("fixed")]
     [Authorize(Roles = "Owner,Client")]
     public async Task<IActionResult> CancelAppointmentAsync([FromRoute] Guid id, CancellationToken cancellationToken)
