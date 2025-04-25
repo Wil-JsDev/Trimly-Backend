@@ -13,7 +13,7 @@ public class UpdateAccount : AbstractValidator<UpdateAccountDto>
 
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("Last name is required.")
-            .MinimumLength(4).WithMessage("Last name must be at least 4 characters long.");
+            .MinimumLength(2).WithMessage("Last name must be at least 2 characters long.");
 
         RuleFor(x => x.Username)
             .NotEmpty().WithMessage("Username is required.")

@@ -21,7 +21,7 @@ public class RegisterAccount : AbstractValidator<RegisterRequest>
 
         RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("Last name is required.")
-            .MinimumLength(6).WithMessage("Last name must be at least 6 characters long.");
+            .MinimumLength(2).WithMessage("Last name must be at least 2 characters long.");
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty().WithMessage("Phone number is required.")
